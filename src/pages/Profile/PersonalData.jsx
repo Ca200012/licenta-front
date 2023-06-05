@@ -1,130 +1,381 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
+import { Row, Col, Form, Button } from "react-bootstrap";
 import classes from "../Login/Login.module.css";
-import { Link, Navigate } from "react-router-dom";
-import { useStateContext } from "../../contexts/ContextProvider";
+import main_classes from "./PersonalData.module.css";
 import axiosClient from "../../axios-client";
-import { ListGroup } from "react-bootstrap";
+import { ListGroup, Alert } from "react-bootstrap";
+
+import Placeholder from "react-bootstrap/Placeholder";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
+
+import {
+	faIdCard,
+	faEnvelope,
+	faPhone,
+	faCalendarDay,
+	faHouse,
+} from "@fortawesome/free-solid-svg-icons";
 
 function PersonalData() {
-	const [err, setErr] = useState(null);
-	const [showForm, setShowForm] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
+	const [backendErrors, setBackendErrors] = useState(null);
+	const [showAlert, setShowAlert] = useState(false);
 	const [userData, setUserData] = useState(null);
+
+	const [showDataForm, setShowDataForm] = useState(false);
+	const [showAddressForm, setShowAddressForm] = useState(false);
 
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
-		watch,
 	} = useForm();
-
-	const password = watch("password");
-	const confirmPassword = watch("confirmPassword");
-	const passwordsMatch = password === confirmPassword;
 
 	useEffect(() => {
 		const loadData = async () => {
 			const result = await getUserData();
 			setUserData(result);
+			setIsLoading(false);
 		};
 
 		loadData();
 	}, []);
 
+	useEffect(() => {
+		if (backendErrors) {
+			setShowAlert(true);
+		}
+	}, [backendErrors]);
+
 	const getUserData = async () => {
 		try {
 			const response = await axiosClient.get("/user");
-			return response.data.data;
+			const data = response.data.data;
+			if (data.date_of_birth) {
+				data.date_of_birth = await formatDate(data.date_of_birth);
+			}
+			return data;
 		} catch (err) {
 			const response = err.response;
 			if (response && response.status !== 200) {
 				if (response.data.errors) {
-					setErr(response.data.errors);
+					console.log(response.data.errors, "check errors");
+					setBackendErrors(response.data.errors);
 				}
 			}
 		}
 	};
 
-	const onSubmit = () => {};
+	const resetForm = () => {
+		setShowDataForm(!showDataForm);
+		getUserData();
+	};
+
+	async function formatDate(date) {
+		const d = new Date(date);
+		let month = "" + (d.getMonth() + 1);
+		let day = "" + d.getDate();
+		let year = d.getFullYear();
+
+		if (month.length < 2) {
+			month = "0" + month;
+		}
+
+		if (day.length < 2) {
+			day = "0" + day;
+		}
+
+		return await [year, month, day].join("-");
+	}
+
+	const onSubmitData = (form_data) => {
+		const payload = {
+			first_name: form_data.firstName,
+			last_name: form_data.lastName,
+			email: form_data.email,
+			phone_number: form_data.phoneNumber,
+			date_of_birth: form_data.dateOfBirth,
+		};
+		axiosClient
+			.put("/user", payload)
+			.then(async ({ data }) => {
+				// Fetch the updated user data
+				const updatedData = await getUserData();
+				setUserData(updatedData);
+				setShowDataForm(!showDataForm);
+			})
+			.catch((err) => {
+				const response = err.response;
+				if (response && response.status == 422) {
+					setBackendErrors(response.data.errors);
+				}
+			});
+	};
+
+	const onSubmitAddress = (form_data) => {
+		const payload = {
+			county: form_data.county,
+			city: form_data.city,
+			street: form_data.street,
+			street_number: form_data.streetNumber,
+			building: form_data.building,
+			entrance: form_data.entrance,
+			apartment: form_data.apartment,
+			postal_code: form_data.postal_code,
+		};
+		axiosClient
+			//de modificat
+			.put("/user", payload)
+			.then(async ({ data }) => {
+				// Fetch the updated user data
+				const updatedData = await getUserData();
+				setUserData(updatedData);
+				setShowAddressForm(!showAddressForm);
+			})
+			.catch((err) => {
+				const response = err.response;
+				if (response && response.status == 422) {
+					setBackendErrors(response.data.errors);
+				}
+			});
+	};
+
 	return (
 		<>
-			{!showForm && (
+			{showAlert && (
+				<Alert
+					variant="danger"
+					dismissible
+					onClose={() => {
+						setShowAlert(false);
+						setBackendErrors(null);
+					}}
+					className="m-3 text-center"
+				>
+					{Object.values(backendErrors).map((error, index) => (
+						<p className="m-0" key={index}>
+							{error}
+						</p>
+					))}
+				</Alert>
+			)}
+
+			{!showDataForm && !showAddressForm && (
 				<>
-					<Row className="p-2 w-100">
-						<Col className="pt-3 text-center">
+					<Row className="w-100 m-0">
+						<Col className="py-3 text-center">
 							<h3>Date personale</h3>
 						</Col>
 					</Row>
-					<Row className="px-2 w-100">
+					<Row className="w-100 m-0">
+						<Col className="py-2">
+							<h5 className="ms-5">Detalii</h5>
+						</Col>
+					</Row>
+					<Row className="w-100 m-0">
 						<Col>
 							<ListGroup variant="flush">
 								<ListGroup.Item>
-									Nume: {"   "}
-									{userData?.last_name}
+									{isLoading && (
+										<Placeholder as="span" animation="glow">
+											<Placeholder xs={12} />
+										</Placeholder>
+									)}
+									{!isLoading && (
+										<>
+											<FontAwesomeIcon icon={faIdCard} className="me-2" />
+											{`Nume: ${userData?.last_name}`}
+										</>
+									)}
+								</ListGroup.Item>
+
+								<ListGroup.Item>
+									{isLoading && (
+										<Placeholder as="span" animation="glow">
+											<Placeholder xs={12} />
+										</Placeholder>
+									)}
+									{!isLoading && (
+										<>
+											<FontAwesomeIcon icon={faIdCard} className="me-2" />
+											{`Prenume: ${userData?.first_name}`}
+										</>
+									)}
+								</ListGroup.Item>
+
+								<ListGroup.Item>
+									{isLoading && (
+										<Placeholder as="span" animation="glow">
+											<Placeholder xs={12} />
+										</Placeholder>
+									)}
+									{!isLoading && (
+										<>
+											<FontAwesomeIcon icon={faEnvelope} className="me-2" />
+											{`Email: ${userData?.email}`}
+										</>
+									)}
+								</ListGroup.Item>
+
+								<ListGroup.Item>
+									{isLoading && (
+										<Placeholder as="span" animation="glow">
+											<Placeholder xs={12} />
+										</Placeholder>
+									)}
+									{!isLoading && (
+										<>
+											<FontAwesomeIcon icon={faPhone} className="me-2" />
+											{`Telefon: ${userData?.phone_number}`}
+										</>
+									)}
 								</ListGroup.Item>
 								<ListGroup.Item>
-									Prenume: {"   "}
-									{userData?.first_name}
-								</ListGroup.Item>
-								<ListGroup.Item>
-									Email: {"   "}
-									{userData?.email}
-								</ListGroup.Item>
-								<ListGroup.Item>
-									Numar de telefon: {"   "} {userData?.phone_number}
-								</ListGroup.Item>
-								<ListGroup.Item>
-									Data nasterii: {"   "}
-									{userData?.date_of_birth}
+									{isLoading && (
+										<Placeholder as="span" animation="glow">
+											<Placeholder xs={12} />
+										</Placeholder>
+									)}
+									{!isLoading && (
+										<>
+											<FontAwesomeIcon icon={faCalendarDay} className="me-2" />
+											{`Data nasterii: ${userData?.date_of_birth}`}
+										</>
+									)}
 								</ListGroup.Item>
 							</ListGroup>
 							<Button
 								variant="primary"
-								type="submit"
 								size="xs"
 								className={`${classes.grad} my-3`}
+								onClick={() => setShowDataForm(!showDataForm)}
 							>
-								<FontAwesomeIcon icon={faPenToSquare} />
+								Editare
+								{/* <FontAwesomeIcon icon={faPenToSquare} /> */}
+							</Button>
+						</Col>
+					</Row>
+					<Row className="w-100 m-0">
+						<Col className="py-2">
+							<h5 className="ms-5">Adrese</h5>
+						</Col>
+					</Row>
+					<Row className="w-100 m-0">
+						<Col>
+							<ListGroup variant="flush">
+								<ListGroup.Item>
+									{isLoading && (
+										<Placeholder as="span" animation="glow">
+											<Placeholder xs={12} />
+										</Placeholder>
+									)}
+									{!isLoading && (
+										<>
+											<FontAwesomeIcon icon={faHouse} className="me-2" />
+											{`Judet: ${userData?.last_name}`}
+										</>
+									)}
+								</ListGroup.Item>
+
+								<ListGroup.Item>
+									{isLoading && (
+										<Placeholder as="span" animation="glow">
+											<Placeholder xs={12} />
+										</Placeholder>
+									)}
+									{!isLoading && (
+										<>
+											<FontAwesomeIcon icon={faIdCard} className="me-2" />
+											{`Prenume: ${userData?.first_name}`}
+										</>
+									)}
+								</ListGroup.Item>
+
+								<ListGroup.Item>
+									{isLoading && (
+										<Placeholder as="span" animation="glow">
+											<Placeholder xs={12} />
+										</Placeholder>
+									)}
+									{!isLoading && (
+										<>
+											<FontAwesomeIcon icon={faEnvelope} className="me-2" />
+											{`Email: ${userData?.email}`}
+										</>
+									)}
+								</ListGroup.Item>
+
+								<ListGroup.Item>
+									{isLoading && (
+										<Placeholder as="span" animation="glow">
+											<Placeholder xs={12} />
+										</Placeholder>
+									)}
+									{!isLoading && (
+										<>
+											<FontAwesomeIcon icon={faPhone} className="me-2" />
+											{`Telefon: ${userData?.phone_number}`}
+										</>
+									)}
+								</ListGroup.Item>
+								<ListGroup.Item>
+									{isLoading && (
+										<Placeholder as="span" animation="glow">
+											<Placeholder xs={12} />
+										</Placeholder>
+									)}
+									{!isLoading && (
+										<>
+											<FontAwesomeIcon icon={faCalendarDay} className="me-2" />
+											{`Data nasterii: ${userData?.date_of_birth}`}
+										</>
+									)}
+								</ListGroup.Item>
+							</ListGroup>
+							<Button
+								variant="primary"
+								size="xs"
+								className={`${classes.grad} my-3`}
+								onClick={() => setShowAddressForm(!showAddressForm)}
+							>
+								Editare
+								{/* <FontAwesomeIcon icon={faPenToSquare} /> */}
 							</Button>
 						</Col>
 					</Row>
 				</>
 			)}
-			{showForm && (
+			{showDataForm && (
 				<>
-					<Row className="p-2 w-100">
-						<Col className="p-2 text-center">
+					<Row className="p-2 w-100 m-0 d-flex flex-column">
+						<Col size={12}>
+							<Button
+								variant="primary"
+								type="button"
+								size="md"
+								className={`${classes.grad} ${main_classes.w_fit_content} m-0 mt-3`}
+								onClick={resetForm}
+							>
+								Inapoi
+							</Button>
+						</Col>
+
+						<Col className="p-2 text-center" size={12}>
 							<h3>Editare date personale</h3>
 						</Col>
 					</Row>
 					<Row className="p-2 w-100 m-0">
 						<Col className="">
-							<Form onSubmit={handleSubmit(onSubmit)}>
+							<Form onSubmit={handleSubmit(onSubmitData)}>
 								<Row>
-									<Col>
-										<Form.Group controlId="firstName" className="mb-3">
-											<Form.Label>Prenume</Form.Label>
-											<Form.Control
-												type="text"
-												placeholder="Introduceti prenumele"
-												{...register("firstName", { required: true })}
-											/>
-											{errors.firstName && (
-												<Form.Text className="text-danger">
-													Prenumele este obligatoriu.
-												</Form.Text>
-											)}
-										</Form.Group>
-									</Col>
 									<Col md={6}>
 										<Form.Group controlId="lastName" className="mb-3">
 											<Form.Label>Nume</Form.Label>
 											<Form.Control
 												type="text"
+												defaultValue={userData?.last_name}
 												placeholder="Introduceti numele"
 												{...register("lastName", { required: true })}
 											/>
@@ -135,12 +386,29 @@ function PersonalData() {
 											)}
 										</Form.Group>
 									</Col>
+									<Col md={6}>
+										<Form.Group controlId="firstName" className="mb-3">
+											<Form.Label>Prenume</Form.Label>
+											<Form.Control
+												type="text"
+												defaultValue={userData?.first_name}
+												placeholder="Introduceti prenumele"
+												{...register("firstName", { required: true })}
+											/>
+											{errors.firstName && (
+												<Form.Text className="text-danger">
+													Prenumele este obligatoriu.
+												</Form.Text>
+											)}
+										</Form.Group>
+									</Col>
 								</Row>
 
 								<Form.Group controlId="email" className="mb-3">
 									<Form.Label>Email</Form.Label>
 									<Form.Control
 										type="email"
+										defaultValue={userData?.email}
 										placeholder="Introduceti adresa de email"
 										{...register("email", {
 											required: true,
@@ -163,6 +431,7 @@ function PersonalData() {
 									<Form.Label>Numar de telefon</Form.Label>
 									<Form.Control
 										type="tel"
+										defaultValue={userData?.phone_number}
 										placeholder="Introduceti numarul de telefon"
 										{...register("phoneNumber", {
 											required: true,
@@ -185,53 +454,9 @@ function PersonalData() {
 									<Form.Label>Data nasterii</Form.Label>
 									<Form.Control
 										type="date"
-										{...register("dateOfBirth", { required: true })}
+										defaultValue={userData?.date_of_birth}
+										placeholder="Introduceti data nasterii"
 									/>
-									{errors.dateOfBirth && (
-										<Form.Text className="text-danger">
-											Data nasterii este obligatorie.
-										</Form.Text>
-									)}
-								</Form.Group>
-
-								<Form.Group controlId="password" className="mb-3">
-									<Form.Label>Parola</Form.Label>
-									<Form.Control
-										type="password"
-										placeholder="Introduceti parola"
-										{...register("password", { required: true, minLength: 8 })}
-									/>
-									{errors.password?.type === "required" && (
-										<Form.Text className="text-danger">
-											Parola este obligatorie.
-										</Form.Text>
-									)}
-									{errors.password?.type === "minLength" && (
-										<Form.Text className="text-danger">
-											Parola trebuie sa contina minim 8 caractere.
-										</Form.Text>
-									)}
-								</Form.Group>
-								<Form.Group controlId="confirmPassword" className="mb-3">
-									<Form.Label>Confirmare parola</Form.Label>
-									<Form.Control
-										type="password"
-										placeholder="Confirmati parola"
-										{...register("confirmPassword", {
-											required: true,
-											minLength: 8,
-										})}
-									/>
-									{errors.confirmPassword?.type === "required" && (
-										<Form.Text className="text-danger">
-											Confirmarea parolei este obligatorie.
-										</Form.Text>
-									)}
-									{!passwordsMatch && !errors.confirmPassword && (
-										<Form.Text className="text-danger">
-											Parola si confirmarea parolei sunt diferite.
-										</Form.Text>
-									)}
 								</Form.Group>
 
 								<Button

@@ -20,7 +20,6 @@ function Login() {
 		register,
 		handleSubmit,
 		formState: { errors },
-		watch,
 	} = useForm();
 
 	const [err, setErr] = useState(null);

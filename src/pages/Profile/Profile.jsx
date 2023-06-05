@@ -39,7 +39,7 @@ function Profile() {
 
 	return (
 		<Container
-			className={`${classes.cover} d-flex align-items-center flex-fill p-0 flex-column mt-5`}
+			className={`${classes.cover} d-flex align-items-center flex-fill flex-column position-relative p-0 pt-5`}
 		>
 			<Row className="w-100 m-0">
 				<Col

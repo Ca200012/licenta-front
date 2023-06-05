@@ -1,7 +1,7 @@
 function Footer() {
 	return (
 		<div className="position-relative" style={{ bottom: 0 }}>
-			Footer
+			Licenta-front @2023
 		</div>
 	);
 }
