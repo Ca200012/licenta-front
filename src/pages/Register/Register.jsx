@@ -1,6 +1,14 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
+import {
+	Container,
+	Row,
+	Col,
+	Card,
+	Form,
+	Button,
+	Alert,
+} from "react-bootstrap";
 import classes from "./Register.module.css";
 import { Link, Navigate } from "react-router-dom";
 import { useStateContext } from "../../contexts/ContextProvider";
@@ -10,16 +18,19 @@ import { useState, useEffect } from "react";
 function Register() {
 	const { token } = useStateContext();
 
-	const [err, setErr] = useState(null);
-	const { setUser, setToken } = useStateContext;
+	const [backendErrors, setbackendErrors] = useState(null);
+	const [showAlert, setShowAlert] = useState(false);
+	const { setUser, setToken } = useStateContext();
 
 	useEffect(() => {
 		document.title = "Inregistrare";
 	}, []);
-	//daca un user este logat si intra pe pg de register, va fi redirectionat catre pagina de home
-	if (token) {
-		return <Navigate to="/" />;
-	}
+
+	useEffect(() => {
+		if (backendErrors) {
+			setShowAlert(true);
+		}
+	}, [backendErrors]);
 
 	//functionalitatea de register
 	const onSubmit = (form_data) => {
@@ -29,7 +40,7 @@ function Register() {
 			last_name: form_data.lastName,
 			email: form_data.email,
 			phone_number: form_data.phoneNumber,
-			birth_date: form_data.dateOfBirth,
+			date_of_birth: form_data.dateOfBirth,
 			password: form_data.password,
 			password_confirmation: form_data.confirmPassword,
 		};
@@ -37,15 +48,17 @@ function Register() {
 			.post("/register", payload)
 			//data reprezinta raspunsul primit de la server(din backend)
 			.then(({ data }) => {
+				console.log(data.data);
 				//daca avem raspuns pozitiv stocam in user datele user-ului si in token token ul
 				//pagina isi va da redirect
 				setUser(data.data.user);
 				setToken(data.data.authorisation.token);
+				console.log(data.data);
 			})
 			.catch((err) => {
 				const response = err.response;
 				if (response && response.status == 422) {
-					setErr(response.data.errors);
+					setbackendErrors(response.data.errors);
 					console.log(response.data.errors);
 				}
 			});
@@ -65,6 +78,11 @@ function Register() {
 	const confirmPassword = watch("confirmPassword");
 	const passwordsMatch = password === confirmPassword;
 
+	//daca un user este logat si intra pe pg de register, va fi redirectionat catre pagina de home
+	if (token) {
+		return <Navigate to="/profile" />;
+	}
+
 	return (
 		<Container
 			fluid
@@ -83,12 +101,22 @@ function Register() {
 							<h3 className="text-center p-1">Inregistrare</h3>
 						</Card.Header>
 						<Card.Body>
-							{err && (
-								<div className="alert">
-									{Object.keys(err).map((key) => (
-										<p key={key}>{err[key][0]}</p>
+							{showAlert && (
+								<Alert
+									variant="danger"
+									dismissible
+									onClose={() => {
+										setShowAlert(false);
+										setBackendErrors(null);
+									}}
+									className="m-3 text-center"
+								>
+									{Object.values(backendErrors).map((error, index) => (
+										<p className="m-0" key={index}>
+											{error}
+										</p>
 									))}
-								</div>
+								</Alert>
 							)}
 							<Form onSubmit={handleSubmit(onSubmit)}>
 								<Row>
@@ -177,10 +205,8 @@ function Register() {
 								</Form.Group>
 
 								<Form.Group controlId="dateOfBirth" className="mb-3">
-									<Form.Label>
-										Data nasterii <span className="text-danger">*</span>
-									</Form.Label>
-									<Form.Control type="date" />
+									<Form.Label>Data nasterii</Form.Label>
+									<Form.Control type="date" {...register("dateOfBirth")} />
 								</Form.Group>
 
 								<Form.Group controlId="password" className="mb-3">

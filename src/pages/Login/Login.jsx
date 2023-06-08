@@ -1,6 +1,14 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
+import {
+	Container,
+	Row,
+	Col,
+	Card,
+	Form,
+	Button,
+	Alert,
+} from "react-bootstrap";
 import classes from "./Login.module.css";
 import { Link, Navigate } from "react-router-dom";
 import { useStateContext } from "../../contexts/ContextProvider";
@@ -8,6 +16,9 @@ import axiosClient from "../../axios-client";
 import { useState } from "react";
 
 function Login() {
+	const [backendErrors, setbackendErrors] = useState(null);
+	const [showAlert, setShowAlert] = useState(false);
+	const { setUser, setToken } = useStateContext();
 	const { token } = useStateContext();
 
 	const backgroundImage = "/wp7953009.webp";
@@ -22,8 +33,11 @@ function Login() {
 		formState: { errors },
 	} = useForm();
 
-	const [err, setErr] = useState(null);
-	const { setUser, setToken } = useStateContext();
+	useEffect(() => {
+		if (backendErrors) {
+			setShowAlert(true);
+		}
+	}, [backendErrors]);
 
 	const onSubmit = (form_data) => {
 		const payload = {
@@ -41,9 +55,9 @@ function Login() {
 				const response = err.response;
 				if (response && response.status == 422) {
 					if (response.data.errors) {
-						setErr(response.data.errors);
+						setbackendErrors(response.data.errors);
 					} else {
-						setErr({
+						setbackendErrors({
 							email: [response.data.message],
 						});
 					}
@@ -52,7 +66,7 @@ function Login() {
 	};
 
 	if (token) {
-		return <Navigate to="/" />;
+		return <Navigate to="/profile" />;
 	}
 
 	return (
@@ -73,12 +87,22 @@ function Login() {
 							<h3 className="text-center p-1">Autentificare</h3>
 						</Card.Header>
 						<Card.Body>
-							{err && (
-								<div className="alert">
-									{Object.keys(err).map((key) => (
-										<p key={key}>{err[key][0]}</p>
+							{showAlert && (
+								<Alert
+									variant="danger"
+									dismissible
+									onClose={() => {
+										setShowAlert(false);
+										setBackendErrors(null);
+									}}
+									className="m-3 text-center"
+								>
+									{Object.values(backendErrors).map((error, index) => (
+										<p className="m-0" key={index}>
+											{error}
+										</p>
 									))}
-								</div>
+								</Alert>
 							)}
 							<Form onSubmit={handleSubmit(onSubmit)}>
 								<Form.Group controlId="email" className="mb-3">

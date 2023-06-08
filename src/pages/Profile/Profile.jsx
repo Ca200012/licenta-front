@@ -2,7 +2,7 @@ import classes from "./Profile.module.css";
 
 import { useEffect } from "react";
 import { Container, Row, Col, ListGroup, NavLink } from "react-bootstrap";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useMatch } from "react-router-dom";
 import { useStateContext } from "../../contexts/ContextProvider";
@@ -18,6 +18,7 @@ import axiosClient from "../../axios-client";
 function Profile() {
 	//pentru a verifica ca ruta este /profile
 	const match = useMatch("/profile");
+	const navigate = useNavigate();
 	const { token, setToken, setUser } = useStateContext();
 
 	useEffect(() => {
@@ -30,6 +31,7 @@ function Profile() {
 		axiosClient.post("/logout").then(() => {
 			setUser({});
 			setToken(null);
+			navigate("/login");
 		});
 	};
 

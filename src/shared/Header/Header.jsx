@@ -16,16 +16,18 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { useStateContext } from "../../contexts/ContextProvider";
 import axiosClient from "../../axios-client";
 import classes from "./Header.module.css";
+import { useNavigate } from "react-router-dom";
 
 function Header() {
+	const navigate = useNavigate();
 	const { token, setUser, setToken } = useStateContext();
 
 	const onLogout = (ev) => {
 		ev.preventDefault();
-
 		axiosClient.post("/logout").then(() => {
 			setUser({});
 			setToken(null);
+			navigate("/login");
 		});
 	};
 	return (
@@ -76,7 +78,9 @@ function Header() {
 												Profil
 											</NavDropdown.Item>
 											<NavDropdown.Divider />
-											<NavDropdown.Item href="#">Comenzi</NavDropdown.Item>
+											<NavDropdown.Item href="/profile/orders">
+												Comenzi
+											</NavDropdown.Item>
 											<NavDropdown.Divider />
 											<NavDropdown.Item href="/" onClick={onLogout}>
 												Deconectare
