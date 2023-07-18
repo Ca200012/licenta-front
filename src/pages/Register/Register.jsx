@@ -18,12 +18,12 @@ import { useState, useEffect } from "react";
 function Register() {
 	const { token } = useStateContext();
 
-	const [backendErrors, setbackendErrors] = useState(null);
+	const [backendErrors, setBackendErrors] = useState(null);
 	const [showAlert, setShowAlert] = useState(false);
 	const { setUser, setToken } = useStateContext();
 
 	useEffect(() => {
-		document.title = "Inregistrare";
+		document.title = "Register";
 	}, []);
 
 	useEffect(() => {
@@ -58,7 +58,7 @@ function Register() {
 			.catch((err) => {
 				const response = err.response;
 				if (response && response.status == 422) {
-					setbackendErrors(response.data.errors);
+					setBackendErrors(response.data.errors);
 					console.log(response.data.errors);
 				}
 			});
@@ -98,7 +98,7 @@ function Register() {
 				>
 					<Card className="w-100 shadow rounded border-0">
 						<Card.Header className={classes.header}>
-							<h3 className="text-center p-1">Inregistrare</h3>
+							<h3 className="text-center p-1">Register</h3>
 						</Card.Header>
 						<Card.Body>
 							{showAlert && (
@@ -123,16 +123,16 @@ function Register() {
 									<Col md={6}>
 										<Form.Group controlId="firstName" className="mb-3">
 											<Form.Label>
-												Prenume <span className="text-danger">*</span>
+												First name <span className="text-danger">*</span>
 											</Form.Label>
 											<Form.Control
 												type="text"
-												placeholder="Introduceti prenumele"
+												placeholder="Enter your first name"
 												{...register("firstName", { required: true })}
 											/>
 											{errors.firstName && (
 												<Form.Text className="text-danger">
-													Prenumele este obligatoriu.
+													The first name field is required
 												</Form.Text>
 											)}
 										</Form.Group>
@@ -140,16 +140,16 @@ function Register() {
 									<Col md={6}>
 										<Form.Group controlId="lastName" className="mb-3">
 											<Form.Label>
-												Nume <span className="text-danger">*</span>
+												Last name <span className="text-danger">*</span>
 											</Form.Label>
 											<Form.Control
 												type="text"
-												placeholder="Introduceti numele"
+												placeholder="Enter your last name"
 												{...register("lastName", { required: true })}
 											/>
 											{errors.lastName && (
 												<Form.Text className="text-danger">
-													Numele este obligatoriu.
+													The last name field is required
 												</Form.Text>
 											)}
 										</Form.Group>
@@ -162,7 +162,7 @@ function Register() {
 									</Form.Label>
 									<Form.Control
 										type="email"
-										placeholder="Introduceti adresa de email"
+										placeholder="Enter your email address"
 										{...register("email", {
 											required: true,
 											pattern: /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/,
@@ -170,23 +170,23 @@ function Register() {
 									/>
 									{errors.email?.type === "required" && (
 										<Form.Text className="text-danger">
-											Adresa de email este obligatorie.
+											Email address field is required
 										</Form.Text>
 									)}
 									{errors.email?.type === "pattern" && (
 										<Form.Text className="text-danger">
-											Adresa de email este invalida.
+											Email is invalid
 										</Form.Text>
 									)}
 								</Form.Group>
 
 								<Form.Group controlId="phoneNumber" className="mb-3">
 									<Form.Label>
-										Numar de telefon <span className="text-danger">*</span>
+										Phone number <span className="text-danger">*</span>
 									</Form.Label>
 									<Form.Control
 										type="tel"
-										placeholder="Introduceti numarul de telefon"
+										placeholder="Enter your phone number"
 										{...register("phoneNumber", {
 											required: true,
 											pattern: /^[0-9]{10}$/,
@@ -194,48 +194,48 @@ function Register() {
 									/>
 									{errors.phoneNumber?.type === "required" && (
 										<Form.Text className="text-danger">
-											Numarul de telefon este obligatoriu.
+											Phone number field is required
 										</Form.Text>
 									)}
 									{errors.phoneNumber?.type === "pattern" && (
 										<Form.Text className="text-danger">
-											Numarul de telefon introdus este invalid.
+											Phone number is invalid
 										</Form.Text>
 									)}
 								</Form.Group>
 
 								<Form.Group controlId="dateOfBirth" className="mb-3">
-									<Form.Label>Data nasterii</Form.Label>
+									<Form.Label>Date of birth</Form.Label>
 									<Form.Control type="date" {...register("dateOfBirth")} />
 								</Form.Group>
 
 								<Form.Group controlId="password" className="mb-3">
 									<Form.Label>
-										Parola <span className="text-danger">*</span>
+										Password <span className="text-danger">*</span>
 									</Form.Label>
 									<Form.Control
 										type="password"
-										placeholder="Introduceti parola"
+										placeholder="Enter your password"
 										{...register("password", { required: true, minLength: 8 })}
 									/>
 									{errors.password?.type === "required" && (
 										<Form.Text className="text-danger">
-											Parola este obligatorie.
+											Password field is required
 										</Form.Text>
 									)}
 									{errors.password?.type === "minLength" && (
 										<Form.Text className="text-danger">
-											Parola trebuie sa contina minim 8 caractere.
+											Your password must have a minimum of 8 characters
 										</Form.Text>
 									)}
 								</Form.Group>
 								<Form.Group controlId="confirmPassword" className="mb-3">
 									<Form.Label>
-										Confirmare parola <span className="text-danger">*</span>
+										Password confirmation <span className="text-danger">*</span>
 									</Form.Label>
 									<Form.Control
 										type="password"
-										placeholder="Confirmati parola"
+										placeholder="Confirm your password"
 										{...register("confirmPassword", {
 											required: true,
 											minLength: 8,
@@ -243,12 +243,12 @@ function Register() {
 									/>
 									{errors.confirmPassword?.type === "required" && (
 										<Form.Text className="text-danger">
-											Confirmarea parolei este obligatorie.
+											Password confirmation field is required
 										</Form.Text>
 									)}
 									{!passwordsMatch && !errors.confirmPassword && (
 										<Form.Text className="text-danger">
-											Parola si confirmarea parolei sunt diferite.
+											Password and confirm password are not the same
 										</Form.Text>
 									)}
 								</Form.Group>
@@ -257,7 +257,7 @@ function Register() {
 									<Col className="p-0">
 										<Link to="/login" className="text-decoration-none">
 											<p className={classes.links}>
-												Aveti deja cont? Autentificati-va aici
+												Already have an account? Login here
 											</p>
 										</Link>
 									</Col>
@@ -269,7 +269,7 @@ function Register() {
 									size="md"
 									className={`${classes.grad} w-100 m-0`}
 								>
-									Inregistrare
+									Sign up
 								</Button>
 							</Form>
 						</Card.Body>

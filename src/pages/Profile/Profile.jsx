@@ -22,7 +22,7 @@ function Profile() {
 	const { token, setToken, setUser } = useStateContext();
 
 	useEffect(() => {
-		document.title = "Profil";
+		document.title = "Profile";
 	}, []);
 
 	const onLogout = (ev) => {
@@ -52,7 +52,7 @@ function Profile() {
 					sm={12}
 					xs={12}
 				>
-					<h1 className="py-3 text-center">Profilul meu</h1>
+					<h1 className="py-3 text-center">My profile</h1>
 				</Col>
 			</Row>
 			<Row className="w-100 d-flex m-0">
@@ -63,8 +63,8 @@ function Profile() {
 								to="/profile/personal-data"
 								className="text-decoration-none text-dark"
 							>
-								<FontAwesomeIcon icon={faPerson} className="me-1" /> Date
-								personale
+								<FontAwesomeIcon icon={faPerson} className="me-1" /> Personal
+								data
 							</Link>
 						</ListGroup.Item>
 						<ListGroup.Item className="bg-transparent py-3 fw-bold">
@@ -72,7 +72,7 @@ function Profile() {
 								to="/profile/orders"
 								className="text-decoration-none text-dark"
 							>
-								<FontAwesomeIcon icon={faBox} className="me-1" /> Comenzi
+								<FontAwesomeIcon icon={faBox} className="me-1" /> Orders
 							</Link>
 						</ListGroup.Item>
 						<ListGroup.Item className="py-3 fw-bold">
@@ -80,7 +80,7 @@ function Profile() {
 								to="/profile/returns"
 								className="text-decoration-none text-dark"
 							>
-								<FontAwesomeIcon icon={faTruck} className="me-1" /> Retururi
+								<FontAwesomeIcon icon={faTruck} className="me-1" /> Returns
 							</Link>
 						</ListGroup.Item>
 						<ListGroup.Item className="bg-transparent py-3 fw-bold">
@@ -88,8 +88,7 @@ function Profile() {
 								to="/profile/contact-us"
 								className="text-decoration-none text-dark"
 							>
-								<FontAwesomeIcon icon={faMessage} className="me-1" />{" "}
-								Contacteaza-ne
+								<FontAwesomeIcon icon={faMessage} className="me-1" /> Contact us
 							</Link>
 						</ListGroup.Item>
 						<ListGroup.Item className="py-3 fw-bold">
@@ -102,7 +101,7 @@ function Profile() {
 									icon={faArrowRightFromBracket}
 									className="me-1"
 								/>{" "}
-								Deconectare
+								Logout
 							</Link>
 						</ListGroup.Item>
 					</ListGroup>

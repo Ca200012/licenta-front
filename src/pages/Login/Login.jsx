@@ -24,7 +24,7 @@ function Login() {
 	const backgroundImage = "/wp7953009.webp";
 
 	useEffect(() => {
-		document.title = "Autentificare";
+		document.title = "Login";
 	}, []);
 
 	const {
@@ -84,7 +84,7 @@ function Login() {
 				>
 					<Card className="w-100 shadow rounded border-0">
 						<Card.Header className={classes.header}>
-							<h3 className="text-center p-1">Autentificare</h3>
+							<h3 className="text-center p-1">Login</h3>
 						</Card.Header>
 						<Card.Body>
 							{showAlert && (
@@ -111,7 +111,7 @@ function Login() {
 									</Form.Label>
 									<Form.Control
 										type="email"
-										placeholder="Introduceti adresa de email"
+										placeholder="Enter your email address"
 										{...register("email", {
 											required: true,
 											pattern: /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/,
@@ -119,23 +119,23 @@ function Login() {
 									/>
 									{errors.email?.type === "required" && (
 										<Form.Text className="text-danger">
-											Adresa de email este obligatorie.
+											Email address field is required
 										</Form.Text>
 									)}
 									{errors.email?.type === "pattern" && (
 										<Form.Text className="text-danger">
-											Adresa de email este invalida.
+											Email is invalid
 										</Form.Text>
 									)}
 								</Form.Group>
 
 								<Form.Group controlId="password" className="mb-3">
 									<Form.Label>
-										Parola <span className="text-danger">*</span>
+										Password <span className="text-danger">*</span>
 									</Form.Label>
 									<Form.Control
 										type="password"
-										placeholder="Introduceti parola"
+										placeholder="Enter your password"
 										{...register("password", {
 											required: true,
 											minLength: 8,
@@ -143,12 +143,12 @@ function Login() {
 									/>
 									{errors.password?.type === "required" && (
 										<Form.Text className="text-danger">
-											Parola este obligatorie.
+											Password field is required
 										</Form.Text>
 									)}
 									{errors.password?.type === "minLength" && (
 										<Form.Text className="text-danger">
-											Parola trebuie sa contina minim 8 caractere.
+											Your password must have a minimum of 8 characters
 										</Form.Text>
 									)}
 								</Form.Group>
@@ -160,7 +160,7 @@ function Login() {
 												<Form.Check
 													type={type}
 													id={`default-${type}`}
-													label="Ramaneti conectat"
+													label="Remember me"
 												/>
 											</div>
 										))}
@@ -170,7 +170,7 @@ function Login() {
 											to="/forgot-password"
 											className="text-decoration-none text-dark"
 										>
-											<p className={classes.links}>Ati uitat parola?</p>
+											<p className={classes.links}>Forgot password?</p>
 										</Link>
 									</Col>
 								</Row>
@@ -178,7 +178,7 @@ function Login() {
 									<Col className="p-0">
 										<Link to="/register" className="text-decoration-none">
 											<p className={classes.links}>
-												Nu aveti cont? Inregistrati-va aici
+												You don't have an account? Sign up here
 											</p>
 										</Link>
 									</Col>
@@ -190,7 +190,7 @@ function Login() {
 									size="md"
 									className={`${classes.grad} w-100 m-0`}
 								>
-									Autentificare
+									Login
 								</Button>
 							</Form>
 						</Card.Body>

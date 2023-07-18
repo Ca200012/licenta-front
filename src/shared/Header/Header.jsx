@@ -50,18 +50,18 @@ function Header() {
 							</Navbar.Brand>
 							<Nav className="mx-3 d-flex align-items-center justify-content-center">
 								<Nav.Link href="#" className="mx-3 fw-bold">
-									Femeie
+									Women
 								</Nav.Link>
 								<Nav.Link href="#" className="mx-3 fw-bold">
-									Barbat
+									Men
 								</Nav.Link>
 								<Nav.Link href="#" className="mx-3 fw-bold">
 									<FontAwesomeIcon icon={faSun} beat fade className="me-1" />
-									Colectia de vara
+									Summer collection
 								</Nav.Link>
 								<Nav.Link href="#" className="mx-3 fw-bold">
 									<FontAwesomeIcon icon={faFire} bounce className="me-1" />
-									Promotii de sezon
+									Sales
 								</Nav.Link>
 							</Nav>
 						</Col>
@@ -75,26 +75,24 @@ function Header() {
 									{token && (
 										<>
 											<NavDropdown.Item href="/profile">
-												Profil
+												Profile
 											</NavDropdown.Item>
 											<NavDropdown.Divider />
 											<NavDropdown.Item href="/profile/orders">
-												Comenzi
+												Orders
 											</NavDropdown.Item>
 											<NavDropdown.Divider />
 											<NavDropdown.Item href="/" onClick={onLogout}>
-												Deconectare
+												Logout
 											</NavDropdown.Item>
 										</>
 									)}
 									{!token && (
 										<>
-											<NavDropdown.Item href="/login">
-												Autentificare
-											</NavDropdown.Item>
+											<NavDropdown.Item href="/login">Login</NavDropdown.Item>
 											<NavDropdown.Divider />
 											<NavDropdown.Item href="/register">
-												Nu aveti cont? Inregistrati-va
+												Don't have an account? Sign up here
 											</NavDropdown.Item>
 										</>
 									)}
@@ -106,7 +104,7 @@ function Header() {
 							<Form className="d-flex">
 								<Form.Control
 									type="search"
-									placeholder="Cautare produse"
+									placeholder="Search"
 									className="me-2"
 									aria-label="Search"
 								/>

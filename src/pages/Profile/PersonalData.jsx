@@ -18,7 +18,10 @@ import {
 	faPhone,
 	faCalendarDay,
 	faHouse,
+	faPenToSquare,
+	faTrash,
 } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 
 function PersonalData() {
 	const [isLoading, setIsLoading] = useState(true);
@@ -261,6 +264,12 @@ function PersonalData() {
 			});
 	};
 
+	const editAddress = (id) => {
+		axiosClient.get(`/address/${id}`).then(({ data }) => {
+			console.log(data, `check address ${id}`);
+		});
+	};
+
 	return (
 		<>
 			{showAlert && (
@@ -275,7 +284,7 @@ function PersonalData() {
 				>
 					{Object.values(backendErrors).map((error, index) => (
 						<p className="m-0" key={index}>
-							{error}
+							{error} {"\n"}
 						</p>
 					))}
 				</Alert>
@@ -285,12 +294,12 @@ function PersonalData() {
 				<>
 					<Row className="w-100 m-0">
 						<Col className="py-3 text-center">
-							<h3>Date personale</h3>
+							<h3>Personal data</h3>
 						</Col>
 					</Row>
 					<Row className="w-100 m-0">
 						<Col className="py-2">
-							<h5 className="ms-5">Detalii</h5>
+							<h5 className="ms-5">Details</h5>
 						</Col>
 					</Row>
 					<Row className="w-100 m-0">
@@ -305,7 +314,7 @@ function PersonalData() {
 									{!isLoading && (
 										<>
 											<FontAwesomeIcon icon={faIdCard} className="me-2" />
-											{`Nume: ${userData?.last_name}`}
+											{`First name: ${userData?.last_name}`}
 										</>
 									)}
 								</ListGroup.Item>
@@ -319,7 +328,7 @@ function PersonalData() {
 									{!isLoading && (
 										<>
 											<FontAwesomeIcon icon={faIdCard} className="me-2" />
-											{`Prenume: ${userData?.first_name}`}
+											{`Last name: ${userData?.first_name}`}
 										</>
 									)}
 								</ListGroup.Item>
@@ -347,7 +356,7 @@ function PersonalData() {
 									{!isLoading && (
 										<>
 											<FontAwesomeIcon icon={faPhone} className="me-2" />
-											{`Telefon: ${userData?.phone_number}`}
+											{`Phone number: ${userData?.phone_number}`}
 										</>
 									)}
 								</ListGroup.Item>
@@ -360,7 +369,10 @@ function PersonalData() {
 									{!isLoading && (
 										<>
 											<FontAwesomeIcon icon={faCalendarDay} className="me-2" />
-											{`Data nasterii: ${userData?.date_of_birth}`}
+											Date of birth:{" "}
+											{userData?.date_of_birth != null
+												? userData?.date_of_birth
+												: "-"}
 										</>
 									)}
 								</ListGroup.Item>
@@ -371,14 +383,13 @@ function PersonalData() {
 								className={`${classes.grad} my-3`}
 								onClick={() => setShowDataForm(!showDataForm)}
 							>
-								Editare
-								{/* <FontAwesomeIcon icon={faPenToSquare} /> */}
+								Edit
 							</Button>
 						</Col>
 					</Row>
 					<Row className="w-100 m-0">
 						<Col className="py-2">
-							<h5 className="ms-5">Adrese</h5>
+							<h5 className="ms-5">Adresses</h5>
 						</Col>
 					</Row>
 					<Row className="w-100 m-0">
@@ -386,31 +397,36 @@ function PersonalData() {
 							<ListGroup variant="flush">
 								{Array.isArray(address) &&
 									address.map((item, index) => (
-										<ListGroup.Item key={index}>
+										<ListGroup.Item
+											key={index}
+											className="d-flex flex-row align-items-center justify-content-between"
+										>
 											{isLoading ? (
 												<Placeholder as="span" animation="glow">
 													<Placeholder xs={12} />
 												</Placeholder>
 											) : (
 												<>
-													<FontAwesomeIcon icon={faHouse} className="me-2" />
-													{`Adresa ${index + 1}: `}
-													{item.street}, {item.street_number},{" "}
-													{item.postal_code}
+													<div>
+														<FontAwesomeIcon icon={faHouse} className="me-2" />
+														{`Adress ${index + 1}: `}
+														{item.value}
+													</div>
+													<div>
+														<Link onClick={() => editAddress(item.address_id)}>
+															<FontAwesomeIcon
+																icon={faPenToSquare}
+																className="me-2"
+															/>
+														</Link>
+
+														<FontAwesomeIcon icon={faTrash} />
+													</div>
 												</>
 											)}
 										</ListGroup.Item>
 									))}
 							</ListGroup>
-							{/* {address?.map((item, index) => (
-								<div key={index}>
-									<p>
-										{item.street}
-										{" , "}
-										{item.street_number}
-									</p>
-								</div>
-							))} */}
 						</Col>
 					</Row>
 					<Row className="w-100 m-0">
@@ -422,7 +438,7 @@ function PersonalData() {
 								className={`${classes.grad} my-3`}
 								onClick={() => setShowAddressForm(!showAddressForm)}
 							>
-								Adaugare adresa
+								Add an address
 								{/* <FontAwesomeIcon icon={faPenToSquare} /> */}
 							</Button>
 						</Col>
@@ -440,12 +456,12 @@ function PersonalData() {
 								className={`${classes.grad} ${main_classes.w_fit_content} m-0 mt-3`}
 								onClick={resetDataForm}
 							>
-								Inapoi
+								Back
 							</Button>
 						</Col>
 
 						<Col className="p-2 text-center" size={12}>
-							<h3>Editare date personale</h3>
+							<h3>Edit personal data</h3>
 						</Col>
 					</Row>
 					<Row className="p-2 w-100 m-0">
@@ -453,33 +469,33 @@ function PersonalData() {
 							<Form onSubmit={handleSubmit(onSubmitData)}>
 								<Row>
 									<Col md={6}>
-										<Form.Group controlId="lastName" className="mb-3">
-											<Form.Label>Nume</Form.Label>
+										<Form.Group controlId="firstName" className="mb-3">
+											<Form.Label>First name</Form.Label>
 											<Form.Control
 												type="text"
-												defaultValue={userData?.last_name}
-												placeholder="Introduceti numele"
-												{...register("lastName", { required: true })}
+												placeholder="Enter your first name"
+												defaultValue={userData?.first_name}
+												{...register("firstName", { required: true })}
 											/>
-											{errors.lastName && (
+											{errors.firstName && (
 												<Form.Text className="text-danger">
-													Numele este obligatoriu.
+													The first name field is required
 												</Form.Text>
 											)}
 										</Form.Group>
 									</Col>
 									<Col md={6}>
-										<Form.Group controlId="firstName" className="mb-3">
-											<Form.Label>Prenume</Form.Label>
+										<Form.Group controlId="lastName" className="mb-3">
+											<Form.Label>Last name</Form.Label>
 											<Form.Control
 												type="text"
-												defaultValue={userData?.first_name}
-												placeholder="Introduceti prenumele"
-												{...register("firstName", { required: true })}
+												placeholder="Enter your last name"
+												defaultValue={userData?.last_name}
+												{...register("lastName", { required: true })}
 											/>
-											{errors.firstName && (
+											{errors.lastName && (
 												<Form.Text className="text-danger">
-													Prenumele este obligatoriu.
+													The last name field is required
 												</Form.Text>
 											)}
 										</Form.Group>
@@ -490,8 +506,8 @@ function PersonalData() {
 									<Form.Label>Email</Form.Label>
 									<Form.Control
 										type="email"
+										placeholder="Enter your email address"
 										defaultValue={userData?.email}
-										placeholder="Introduceti adresa de email"
 										{...register("email", {
 											required: true,
 											pattern: /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/,
@@ -499,22 +515,22 @@ function PersonalData() {
 									/>
 									{errors.email?.type === "required" && (
 										<Form.Text className="text-danger">
-											Adresa de email este obligatorie.
+											Email address field is required
 										</Form.Text>
 									)}
 									{errors.email?.type === "pattern" && (
 										<Form.Text className="text-danger">
-											Adresa de email este invalida.
+											Email is invalid
 										</Form.Text>
 									)}
 								</Form.Group>
 
 								<Form.Group controlId="phoneNumber" className="mb-3">
-									<Form.Label>Numar de telefon</Form.Label>
+									<Form.Label>Phone number</Form.Label>
 									<Form.Control
 										type="tel"
+										placeholder="Enter your phone number"
 										defaultValue={userData?.phone_number}
-										placeholder="Introduceti numarul de telefon"
 										{...register("phoneNumber", {
 											required: true,
 											pattern: /^[0-9]{10}$/,
@@ -522,22 +538,22 @@ function PersonalData() {
 									/>
 									{errors.phoneNumber?.type === "required" && (
 										<Form.Text className="text-danger">
-											Numarul de telefon este obligatoriu.
+											Phone number field is required
 										</Form.Text>
 									)}
 									{errors.phoneNumber?.type === "pattern" && (
 										<Form.Text className="text-danger">
-											Numarul de telefon introdus este invalid.
+											Phone number is invalid
 										</Form.Text>
 									)}
 								</Form.Group>
 
 								<Form.Group controlId="dateOfBirth" className="mb-3">
-									<Form.Label>Data nasterii</Form.Label>
+									<Form.Label>Date of birth</Form.Label>
 									<Form.Control
 										type="date"
 										defaultValue={userData?.date_of_birth}
-										placeholder="Introduceti data nasterii"
+										{...register("dateOfBirth")}
 									/>
 								</Form.Group>
 
@@ -565,12 +581,12 @@ function PersonalData() {
 								className={`${classes.grad} ${main_classes.w_fit_content} m-0 mt-3`}
 								onClick={resetAddressForm}
 							>
-								Inapoi
+								Back
 							</Button>
 						</Col>
 
 						<Col className="p-2 text-center" size={12}>
-							<h3>Adaugare adresa</h3>
+							<h3>Add an address</h3>
 						</Col>
 					</Row>
 					<Row className="p-2 w-100 m-0">
@@ -579,7 +595,9 @@ function PersonalData() {
 								<Row>
 									<Col md={6}>
 										<Form.Group controlId="county_id" className="mb-3">
-											<Form.Label>Judet</Form.Label>
+											<Form.Label>
+												County <span className="text-danger">*</span>
+											</Form.Label>
 											<Form.Control
 												as="select"
 												{...register("county_id", { required: true })}
@@ -593,7 +611,7 @@ function PersonalData() {
 												}}
 											>
 												<option key={-1} value={-1}>
-													-- Alegeti un judet --
+													-- Choose a county --
 												</option>
 												{counties?.map((county) => (
 													<option
@@ -606,22 +624,24 @@ function PersonalData() {
 											</Form.Control>
 											{errors.county && (
 												<Form.Text className="text-danger">
-													Judetul este obligatoriu.
+													The county field is required
 												</Form.Text>
 											)}
 										</Form.Group>
 									</Col>
 									<Col md={6}>
 										<Form.Group controlId="search" className="mb-3">
-											<Form.Label>Oras</Form.Label>
+											<Form.Label>
+												City <span className="text-danger">*</span>
+											</Form.Label>
 											<Typeahead
 												id="basic-typeahead-single"
 												labelKey="name"
 												onChange={setCityFn}
 												options={options}
-												placeholder="Alegeti un oras..."
+												placeholder="Choose a city...."
 												onInputChange={(text) => setSearchText(text)}
-												emptyLabel="Nu am gasit un oras"
+												emptyLabel="No match for your search"
 											/>
 										</Form.Group>
 									</Col>
@@ -629,32 +649,36 @@ function PersonalData() {
 								<Row>
 									<Col md={6}>
 										<Form.Group controlId="street" className="mb-3">
-											<Form.Label>Strada</Form.Label>
+											<Form.Label>
+												Street <span className="text-danger">*</span>
+											</Form.Label>
 											<Form.Control
 												type="text"
 												// defaultValue={userData?.last_name}
-												placeholder="Introduceti strada"
+												placeholder="Enter the street"
 												{...register("street", { required: true })}
 											/>
 											{errors.street && (
 												<Form.Text className="text-danger">
-													Strada este obligatorie.
+													The street field is required
 												</Form.Text>
 											)}
 										</Form.Group>
 									</Col>
 									<Col md={6}>
 										<Form.Group controlId="streetNumber" className="mb-3">
-											<Form.Label>Numarul strazii</Form.Label>
+											<Form.Label>
+												Street number <span className="text-danger">*</span>
+											</Form.Label>
 											<Form.Control
 												type="text"
 												// defaultValue={userData?.first_name}
-												placeholder="Introduceti numarul strazii"
+												placeholder="Enter the street number"
 												{...register("streetNumber", { required: true })}
 											/>
 											{errors.streetNumber && (
 												<Form.Text className="text-danger">
-													Numarul strazii este obligatoriu.
+													Street number field is required
 												</Form.Text>
 											)}
 										</Form.Group>
@@ -663,22 +687,22 @@ function PersonalData() {
 								<Row>
 									<Col md={6}>
 										<Form.Group controlId="building" className="mb-3">
-											<Form.Label>Bloc</Form.Label>
+											<Form.Label>Building</Form.Label>
 											<Form.Control
 												type="text"
 												// defaultValue={userData?.last_name}
-												placeholder="Introduceti blocul"
+												placeholder="Enter the building"
 												{...register("building")}
 											/>
 										</Form.Group>
 									</Col>
 									<Col md={6}>
 										<Form.Group controlId="entrance" className="mb-3">
-											<Form.Label>Scara</Form.Label>
+											<Form.Label>Entrance</Form.Label>
 											<Form.Control
 												type="text"
 												// defaultValue={userData?.first_name}
-												placeholder="Introduceti scara"
+												placeholder="Enter the entrance"
 												{...register("entrance")}
 											/>
 										</Form.Group>
@@ -687,27 +711,29 @@ function PersonalData() {
 								<Row>
 									<Col md={6}>
 										<Form.Group controlId="apartment" className="mb-3">
-											<Form.Label>Apartament</Form.Label>
+											<Form.Label>Apartment</Form.Label>
 											<Form.Control
 												type="text"
 												// defaultValue={userData?.first_name}
-												placeholder="Introduceti apartamentul"
+												placeholder="Enter the apartment"
 												{...register("apartment")}
 											/>
 										</Form.Group>
 									</Col>
 									<Col md={6}>
 										<Form.Group controlId="postalCode" className="mb-3">
-											<Form.Label>Cod postal</Form.Label>
+											<Form.Label>
+												Postal code <span className="text-danger">*</span>
+											</Form.Label>
 											<Form.Control
 												type="text"
 												// defaultValue={userData?.first_name}
-												placeholder="Introduceti codul postal"
+												placeholder="Enter the postal code"
 												{...register("postalCode", { required: true })}
 											/>
 											{errors.postalCode && (
 												<Form.Text className="text-danger">
-													Strada este obligatorie.
+													Postal code field is required
 												</Form.Text>
 											)}
 										</Form.Group>
@@ -719,7 +745,7 @@ function PersonalData() {
 									size="md"
 									className={`${classes.grad} w-100 m-0 mb-3`}
 								>
-									Adaugare
+									Add
 								</Button>
 							</Form>
 						</Col>
