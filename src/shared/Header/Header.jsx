@@ -1,26 +1,49 @@
-import { Col, Row } from "react-bootstrap";
-import Container from "react-bootstrap/Container";
-import Navbar from "react-bootstrap/Navbar";
-import { Nav } from "react-bootstrap";
-import { Form } from "react-bootstrap";
-import NavDropdown from "react-bootstrap/NavDropdown";
-import Button from "react-bootstrap/Button";
 import { useState } from "react";
+import { useStateContext } from "../../contexts/ContextProvider";
+import { useNavigate } from "react-router-dom";
+import axiosClient from "../../axios-client";
+
+import {
+	Col,
+	Row,
+	Container,
+	Navbar,
+	Nav,
+	Form,
+	NavDropdown,
+	Button,
+} from "react-bootstrap";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFire } from "@fortawesome/free-solid-svg-icons";
-import { faSun } from "@fortawesome/free-solid-svg-icons";
-import { faUser } from "@fortawesome/free-regular-svg-icons";
-import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { useStateContext } from "../../contexts/ContextProvider";
-import axiosClient from "../../axios-client";
-import classes from "./Header.module.css";
-import { useNavigate } from "react-router-dom";
+import {
+	faFire,
+	faUser,
+	faCartShopping,
+	faMagnifyingGlass,
+} from "@fortawesome/free-solid-svg-icons";
 
 function Header() {
 	const navigate = useNavigate();
 	const { token, setUser, setToken } = useStateContext();
+	const [hoveredDropdown, setHoveredDropdown] = useState(null);
+	const [closeTimeout, setCloseTimeout] = useState(null);
+	const [categories, setCategories] = useState([]);
+	const [subCategories, setSubCategories] = useState([]);
+
+	const handleMouseEnter = (id) => {
+		if (closeTimeout) {
+			clearTimeout(closeTimeout);
+			setCloseTimeout(null);
+		}
+		setHoveredDropdown(id);
+	};
+
+	const handleMouseLeave = () => {
+		const timeout = setTimeout(() => {
+			setHoveredDropdown(null);
+		}, 600); // 300 milliseconds delay before closing the dropdown
+		setCloseTimeout(timeout);
+	};
 
 	const onLogout = (ev) => {
 		ev.preventDefault();
@@ -30,6 +53,51 @@ function Header() {
 			navigate("/login");
 		});
 	};
+
+	const getCategories = async (id) => {
+		if (!id) {
+			return;
+		}
+
+		try {
+			const response = await axiosClient.get("/category/" + id);
+			const data = response.data.data;
+			console.log("Data from API: ", data);
+			setCategories(data);
+			return data;
+		} catch (err) {
+			const response = err.response;
+			if (response && response.status !== 200) {
+				if (response.data.errors) {
+					console.log(response.data.errors, "check errors");
+					//setBackendErrors(response.data.errors);
+				}
+			}
+		}
+	};
+
+	const getSubcategories = async (id) => {
+		if (!id) {
+			return;
+		}
+
+		try {
+			const response = await axiosClient.get("/subcategory/" + id);
+			const data = response.data.data;
+			console.log("Data from API: ", data);
+			setSubCategories(data);
+			return data;
+		} catch (err) {
+			const response = err.response;
+			if (response && response.status !== 200) {
+				if (response.data.errors) {
+					console.log(response.data.errors, "check errors");
+					//setBackendErrors(response.data.errors);
+				}
+			}
+		}
+	};
+
 	return (
 		<>
 			<Navbar bg="light" variant="light" className="px-0">
@@ -49,16 +117,55 @@ function Header() {
 								/>{" "}
 							</Navbar.Brand>
 							<Nav className="mx-3 d-flex align-items-center justify-content-center">
-								<Nav.Link href="#" className="mx-3 fw-bold">
-									Women
-								</Nav.Link>
-								<Nav.Link href="#" className="mx-3 fw-bold">
-									Men
-								</Nav.Link>
-								<Nav.Link href="#" className="mx-3 fw-bold">
-									<FontAwesomeIcon icon={faSun} beat fade className="me-1" />
-									Summer collection
-								</Nav.Link>
+								<NavDropdown
+									title="Women"
+									id="1"
+									renderMenuOnMount={true}
+									className="mx-3 fw-bold"
+									show={hoveredDropdown === "1"}
+									// onMouseOver={(e) => {
+									// 	handleMouseEnter("1");
+									// 	getCategories(e.target.id);
+									// }}
+									// onMouseOut={handleMouseLeave}
+									// onClick={() => navigate("/profile/personal-data")}
+								>
+									{categories?.map((item, index) => (
+										<NavDropdown
+											id={item.category_id}
+											renderMenuOnMount={true}
+											key={index}
+											title={item.name}
+											// onMouseOver={(e) => {
+											// 	handleMouseEnter(item.category_id);
+											// 	getSubcategories(item.category_id);
+											// }}
+											// onMouseOut={handleMouseLeave}
+											// onClick={() => navigate("/profile/orders")}
+										>
+											{subCategories.map((subCategory, subIndex) => (
+												<NavDropdown.Item key={subIndex} href="#">
+													{subCategory.name}
+												</NavDropdown.Item>
+											))}
+										</NavDropdown>
+									))}
+								</NavDropdown>
+
+								<NavDropdown
+									title="Men"
+									id="2"
+									renderMenuOnMount={true}
+									className="mx-3 fw-bold"
+									onClick={(e) => getCategories(e.target.id)}
+								></NavDropdown>
+								<NavDropdown
+									title="Unisex"
+									id="3"
+									renderMenuOnMount={true}
+									className="mx-3 fw-bold"
+									onClick={(e) => getCategories(e.target.id)}
+								></NavDropdown>
 								<Nav.Link href="#" className="mx-3 fw-bold">
 									<FontAwesomeIcon icon={faFire} bounce className="me-1" />
 									Sales
