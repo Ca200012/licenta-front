@@ -8,6 +8,7 @@ import Orders from "./pages/Profile/Orders";
 import PersonalData from "./pages/Profile/PersonalData";
 import Returns from "./pages/Profile/Returns";
 import ContactUs from "./pages/Profile/ContactUs";
+import Articles from "./pages/Articles/Articles";
 
 const router = createBrowserRouter([
 	{
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
 						element: <ContactUs />,
 					},
 				],
+			},
+			{
+				path: "/articles",
+				element: <Articles />,
 			},
 		],
 	},

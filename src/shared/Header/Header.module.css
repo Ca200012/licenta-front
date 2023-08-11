@@ -1,0 +1,18 @@
+/* .dr {
+    right: auto !important;
+    left: 100% !important;
+}
+
+.ds .dropdown-toggle::after {
+    vertical-align: 0.255em;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 0.255em;
+    content: "";
+    border-left: 0.3em solid;
+    border-right: 0;
+    border-top: 0.3em solid transparent;
+    border-bottom: 0.3em solid transparent;
+    transform: rotate(-90deg);
+} */

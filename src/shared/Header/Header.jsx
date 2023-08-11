@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useStateContext } from "../../contexts/ContextProvider";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../../axios-client";
-
 import {
 	Col,
 	Row,
@@ -25,25 +24,14 @@ import {
 function Header() {
 	const navigate = useNavigate();
 	const { token, setUser, setToken } = useStateContext();
-	const [hoveredDropdown, setHoveredDropdown] = useState(null);
-	const [closeTimeout, setCloseTimeout] = useState(null);
+
 	const [categories, setCategories] = useState([]);
 	const [subCategories, setSubCategories] = useState([]);
+	const [articleTypes, setArticleTypes] = useState([]);
 
-	const handleMouseEnter = (id) => {
-		if (closeTimeout) {
-			clearTimeout(closeTimeout);
-			setCloseTimeout(null);
-		}
-		setHoveredDropdown(id);
-	};
-
-	const handleMouseLeave = () => {
-		const timeout = setTimeout(() => {
-			setHoveredDropdown(null);
-		}, 600); // 300 milliseconds delay before closing the dropdown
-		setCloseTimeout(timeout);
-	};
+	const [isCategoriesLoading, setIsCategoriesLoading] = useState(false);
+	const [isSubCategoriesLoading, setIsSubCategoriesLoading] = useState(false);
+	const [isArticleTypesLoading, setIsArticleTypesLoading] = useState(false);
 
 	const onLogout = (ev) => {
 		ev.preventDefault();
@@ -58,11 +46,13 @@ function Header() {
 		if (!id) {
 			return;
 		}
+		setIsCategoriesLoading(true);
 
 		try {
 			const response = await axiosClient.get("/category/" + id);
 			const data = response.data.data;
 			console.log("Data from API: ", data);
+			setIsCategoriesLoading(false);
 			setCategories(data);
 			return data;
 		} catch (err) {
@@ -70,7 +60,6 @@ function Header() {
 			if (response && response.status !== 200) {
 				if (response.data.errors) {
 					console.log(response.data.errors, "check errors");
-					//setBackendErrors(response.data.errors);
 				}
 			}
 		}
@@ -80,11 +69,13 @@ function Header() {
 		if (!id) {
 			return;
 		}
+		setIsSubCategoriesLoading(true);
 
 		try {
 			const response = await axiosClient.get("/subcategory/" + id);
 			const data = response.data.data;
 			console.log("Data from API: ", data);
+			setIsSubCategoriesLoading(false);
 			setSubCategories(data);
 			return data;
 		} catch (err) {
@@ -92,10 +83,52 @@ function Header() {
 			if (response && response.status !== 200) {
 				if (response.data.errors) {
 					console.log(response.data.errors, "check errors");
-					//setBackendErrors(response.data.errors);
 				}
 			}
 		}
+	};
+
+	const getArticleTypes = async (e, id) => {
+		if (!id) {
+			return;
+		}
+
+		setIsArticleTypesLoading(true);
+
+		try {
+			const response = await axiosClient.get("/articletype/" + id);
+			const data = response.data.data;
+			console.log("Data from API: ", data);
+			setIsArticleTypesLoading(false);
+			setArticleTypes(data);
+			return data;
+		} catch (err) {
+			const response = err.response;
+			if (response && response.status !== 200) {
+				if (response.data.errors) {
+					console.log(response.data.errors, "check errors");
+				}
+			}
+		}
+	};
+
+	const navigateToArticlesPage = (
+		gender,
+		category = null,
+		subcategory = null,
+		articletype = null
+	) => {
+		if (!category) navigate(`/articles?gender=${gender}`);
+		else if (!subcategory)
+			navigate(`/articles?gender=${gender}&category=${category}`);
+		else if (!articletype)
+			navigate(
+				`/articles?gender=${gender}&category=${category}&subCategory=${subcategory}`
+			);
+		else
+			navigate(
+				`/articles?gender=${gender}&category=${category}&subCategory=${subcategory}&articletype=${articletype}`
+			);
 	};
 
 	return (
@@ -103,7 +136,6 @@ function Header() {
 			<Navbar bg="light" variant="light" className="px-0">
 				<Container fluid className="p-0 m-0">
 					{" "}
-					{/* Apply fluid prop to the Container */}
 					<Row className="w-100 d-flex justify-content-between">
 						<Col className="d-flex justify-content-start ps-4">
 							<Navbar.Brand href="/">
@@ -117,55 +149,285 @@ function Header() {
 								/>{" "}
 							</Navbar.Brand>
 							<Nav className="mx-3 d-flex align-items-center justify-content-center">
+								{/* women */}
 								<NavDropdown
 									title="Women"
 									id="1"
 									renderMenuOnMount={true}
 									className="mx-3 fw-bold"
-									show={hoveredDropdown === "1"}
-									// onMouseOver={(e) => {
-									// 	handleMouseEnter("1");
-									// 	getCategories(e.target.id);
-									// }}
-									// onMouseOut={handleMouseLeave}
-									// onClick={() => navigate("/profile/personal-data")}
+									onClick={(e) => getCategories(e.target.id)}
 								>
-									{categories?.map((item, index) => (
-										<NavDropdown
-											id={item.category_id}
-											renderMenuOnMount={true}
-											key={index}
-											title={item.name}
-											// onMouseOver={(e) => {
-											// 	handleMouseEnter(item.category_id);
-											// 	getSubcategories(item.category_id);
-											// }}
-											// onMouseOut={handleMouseLeave}
-											// onClick={() => navigate("/profile/orders")}
-										>
-											{subCategories.map((subCategory, subIndex) => (
-												<NavDropdown.Item key={subIndex} href="#">
-													{subCategory.name}
+									<NavDropdown.Item
+										onClick={() => {
+											navigateToArticlesPage("Women");
+										}}
+									>
+										See All
+									</NavDropdown.Item>
+									{(isCategoriesLoading &&
+										!isSubCategoriesLoading &&
+										!isArticleTypesLoading) ||
+									!categories.length ? (
+										<NavDropdown.Item>Loading...</NavDropdown.Item>
+									) : (
+										categories.map((item, index) => (
+											<NavDropdown
+												key={index}
+												title={item.name}
+												drop={"end"}
+												onClick={(e) => {
+													getSubcategories(item.category_id);
+												}}
+											>
+												<NavDropdown.Item
+													onClick={() => {
+														navigateToArticlesPage("Women", item.name);
+													}}
+												>
+													See All
 												</NavDropdown.Item>
-											))}
-										</NavDropdown>
-									))}
+												{(isSubCategoriesLoading &&
+													!isCategoriesLoading &&
+													!isArticleTypesLoading) ||
+												!subCategories.length ? (
+													<NavDropdown.Item>Loading...</NavDropdown.Item>
+												) : (
+													subCategories.map((subCat, subIndex) => (
+														<NavDropdown
+															key={subIndex}
+															title={subCat.name}
+															onClick={(e) => {
+																e.stopPropagation();
+																getArticleTypes(e, subCat.subcategory_id);
+															}}
+														>
+															<NavDropdown.Item
+																onClick={() => {
+																	navigateToArticlesPage(
+																		"Women",
+																		item.name,
+																		subCat.name,
+																		""
+																	);
+																}}
+															>
+																See All
+															</NavDropdown.Item>
+															{(isArticleTypesLoading &&
+																!isCategoriesLoading) ||
+															!articleTypes.length ? (
+																<NavDropdown.Item>Loading...</NavDropdown.Item>
+															) : (
+																articleTypes.map((artType, artIndex) => (
+																	<NavDropdown.Item
+																		key={artIndex}
+																		title={artType.name}
+																		onClick={() => {
+																			navigateToArticlesPage(
+																				"Women",
+																				item.name,
+																				subCat.name,
+																				artType.name
+																			);
+																		}}
+																	>
+																		{artType.name}
+																	</NavDropdown.Item>
+																))
+															)}
+														</NavDropdown>
+													))
+												)}
+											</NavDropdown>
+										))
+									)}
 								</NavDropdown>
-
+								{/* men */}
 								<NavDropdown
 									title="Men"
 									id="2"
 									renderMenuOnMount={true}
 									className="mx-3 fw-bold"
 									onClick={(e) => getCategories(e.target.id)}
-								></NavDropdown>
+								>
+									<NavDropdown.Item
+										onClick={() => {
+											navigateToArticlesPage("Men", "", "", "");
+										}}
+									>
+										See All
+									</NavDropdown.Item>
+									{(isCategoriesLoading &&
+										!isSubCategoriesLoading &&
+										!isArticleTypesLoading) ||
+									!categories.length ? (
+										<NavDropdown.Item>Loading...</NavDropdown.Item>
+									) : (
+										categories.map((item, index) => (
+											<NavDropdown
+												key={index}
+												title={item.name}
+												drop={"end"}
+												onClick={(e) => {
+													getSubcategories(item.category_id);
+												}}
+											>
+												<NavDropdown.Item
+													onClick={() => {
+														navigateToArticlesPage("Men", item.name, "", "");
+													}}
+												>
+													See All
+												</NavDropdown.Item>
+												{(isSubCategoriesLoading &&
+													!isCategoriesLoading &&
+													!isArticleTypesLoading) ||
+												!subCategories.length ? (
+													<NavDropdown.Item>Loading...</NavDropdown.Item>
+												) : (
+													subCategories.map((subCat, subIndex) => (
+														<NavDropdown
+															key={subIndex}
+															title={subCat.name}
+															onClick={(e) => {
+																e.stopPropagation();
+																getArticleTypes(e, subCat.subcategory_id);
+															}}
+														>
+															<NavDropdown.Item
+																onClick={() => {
+																	navigateToArticlesPage(
+																		"Men",
+																		item.name,
+																		subCat.name,
+																		""
+																	);
+																}}
+															>
+																See All
+															</NavDropdown.Item>
+															{(isArticleTypesLoading &&
+																!isCategoriesLoading) ||
+															!articleTypes.length ? (
+																<NavDropdown.Item>Loading...</NavDropdown.Item>
+															) : (
+																articleTypes.map((artType, artIndex) => (
+																	<NavDropdown.Item
+																		key={artIndex}
+																		title={artType.name}
+																		onClick={() => {
+																			navigateToArticlesPage(
+																				"Men",
+																				item.name,
+																				subCat.name,
+																				artType.name
+																			);
+																		}}
+																	>
+																		{artType.name}
+																	</NavDropdown.Item>
+																))
+															)}
+														</NavDropdown>
+													))
+												)}
+											</NavDropdown>
+										))
+									)}
+								</NavDropdown>
+								{/* unisex */}
 								<NavDropdown
 									title="Unisex"
 									id="3"
 									renderMenuOnMount={true}
 									className="mx-3 fw-bold"
 									onClick={(e) => getCategories(e.target.id)}
-								></NavDropdown>
+								>
+									<NavDropdown.Item
+										onClick={() => {
+											navigateToArticlesPage("Unisex", "", "", "");
+										}}
+									>
+										See All
+									</NavDropdown.Item>
+									{(isCategoriesLoading &&
+										!isSubCategoriesLoading &&
+										!isArticleTypesLoading) ||
+									!categories.length ? (
+										<NavDropdown.Item>Loading...</NavDropdown.Item>
+									) : (
+										categories.map((item, index) => (
+											<NavDropdown
+												key={index}
+												title={item.name}
+												drop={"end"}
+												onClick={(e) => {
+													getSubcategories(item.category_id);
+												}}
+											>
+												<NavDropdown.Item
+													onClick={() => {
+														navigateToArticlesPage("Unisex", item.name, "", "");
+													}}
+												>
+													See All
+												</NavDropdown.Item>
+												{(isSubCategoriesLoading &&
+													!isCategoriesLoading &&
+													!isArticleTypesLoading) ||
+												!subCategories.length ? (
+													<NavDropdown.Item>Loading...</NavDropdown.Item>
+												) : (
+													subCategories.map((subCat, subIndex) => (
+														<NavDropdown
+															key={subIndex}
+															title={subCat.name}
+															onClick={(e) => {
+																e.stopPropagation();
+																getArticleTypes(e, subCat.subcategory_id);
+															}}
+														>
+															<NavDropdown.Item
+																onClick={() => {
+																	navigateToArticlesPage(
+																		"Unisex",
+																		item.name,
+																		subCat.name,
+																		""
+																	);
+																}}
+															>
+																See All
+															</NavDropdown.Item>
+															{(isArticleTypesLoading &&
+																!isCategoriesLoading) ||
+															!articleTypes.length ? (
+																<NavDropdown.Item>Loading...</NavDropdown.Item>
+															) : (
+																articleTypes.map((artType, artIndex) => (
+																	<NavDropdown.Item
+																		key={artIndex}
+																		title={artType.name}
+																		onClick={() => {
+																			navigateToArticlesPage(
+																				"Unisex",
+																				item.name,
+																				subCat.name,
+																				artType.name
+																			);
+																		}}
+																	>
+																		{artType.name}
+																	</NavDropdown.Item>
+																))
+															)}
+														</NavDropdown>
+													))
+												)}
+											</NavDropdown>
+										))
+									)}
+								</NavDropdown>
 								<Nav.Link href="#" className="mx-3 fw-bold">
 									<FontAwesomeIcon icon={faFire} bounce className="me-1" />
 									Sales
