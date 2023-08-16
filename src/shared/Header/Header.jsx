@@ -123,11 +123,11 @@ function Header() {
 			navigate(`/articles?gender=${gender}&category=${category}`);
 		else if (!articletype)
 			navigate(
-				`/articles?gender=${gender}&category=${category}&subCategory=${subcategory}`
+				`/articles?gender=${gender}&category=${category}&subcategory=${subcategory}`
 			);
 		else
 			navigate(
-				`/articles?gender=${gender}&category=${category}&subCategory=${subcategory}&articletype=${articletype}`
+				`/articles?gender=${gender}&category=${category}&subcategory=${subcategory}&articletype=${articletype}`
 			);
 	};
 

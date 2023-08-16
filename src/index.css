@@ -75,10 +75,14 @@ button:focus-visible {
   background-color: transparent; 
 }
 
-.nav-item:hover {
-  background-color: #d6d9fe;
+.nav-item:hover, .dropdown-item:hover {
+  background-color: #d6d9fe !important;
 }
 
 .card:hover{
   box-shadow: 0 0 4px #6f42c1, 0 0 4px #6f42c1;
+}
+
+.btn:hover, :focus {
+  background-color: #d6d9fe !important;
 }
