@@ -9,6 +9,7 @@ import PersonalData from "./pages/Profile/PersonalData";
 import Returns from "./pages/Profile/Returns";
 import ContactUs from "./pages/Profile/ContactUs";
 import Articles from "./pages/Articles/Articles";
+import ArticlePage from "./pages/ArticlePage/ArticlePage";
 
 const router = createBrowserRouter([
 	{
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
 			{
 				path: "/articles",
 				element: <Articles />,
+			},
+			{
+				path: "/articlepage",
+				element: <ArticlePage />,
 			},
 		],
 	},

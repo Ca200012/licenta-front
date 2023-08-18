@@ -24,3 +24,12 @@
     object-fit: cover;
 }
 
+.scrollable_dropdown {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.filters_menu {
+    display: flex;
+    flex-direction: column !important;
+}

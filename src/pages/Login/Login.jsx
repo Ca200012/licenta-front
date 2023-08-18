@@ -16,7 +16,7 @@ import axiosClient from "../../axios-client";
 import { useState } from "react";
 
 function Login() {
-	const [backendErrors, setbackendErrors] = useState(null);
+	const [backendErrors, setBackendErrors] = useState(null);
 	const [showAlert, setShowAlert] = useState(false);
 	const { setUser, setToken } = useStateContext();
 	const { token } = useStateContext();
