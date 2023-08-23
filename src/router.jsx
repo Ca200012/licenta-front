@@ -4,13 +4,19 @@ import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import Profile from "./pages/Profile/Profile";
-import Orders from "./pages/Profile/Orders";
-import PersonalData from "./pages/Profile/PersonalData";
-import Returns from "./pages/Profile/Returns";
-import ContactUs from "./pages/Profile/ContactUs";
+
+import Orders from "./components/profile/Orders";
+import ContactUs from "./components/profile/ContactUs";
+import PersonalData from "./components/profile/PersonalData";
+import Returns from "./components/profile/Returns";
+
 import Articles from "./pages/Articles/Articles";
 import ArticlePage from "./pages/ArticlePage/ArticlePage";
+
 import Cart from "./pages/Cart/Cart";
+import Checkout from "./components/cart/Checkout";
+
+import ProtectedCheckoutRoute from "./guards/ProtectedCheckoutRoute";
 
 const router = createBrowserRouter([
 	{
@@ -62,6 +68,16 @@ const router = createBrowserRouter([
 			{
 				path: "/cart",
 				element: <Cart />,
+				children: [
+					{
+						path: "checkout",
+						element: (
+							<ProtectedCheckoutRoute>
+								<Checkout />
+							</ProtectedCheckoutRoute>
+						),
+					},
+				],
 			},
 		],
 	},

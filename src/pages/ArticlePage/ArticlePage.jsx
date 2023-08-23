@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import classes from "./ArticlePage.module.css";
 import axiosClient from "../../axios-client";
-import SizeGuide from "../../SizeGuide/SizeGuide";
+import SizeGuide from "../../components/article/SizeGuide";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
 
@@ -15,7 +15,7 @@ import {
 } from "react-bootstrap";
 import { useEffect, useState } from "react";
 
-import AddToCart from "../../Cart/AddToCart";
+import AddToCart from "../../components/cart/AddToCart";
 
 function useQuery() {
 	return new URLSearchParams(useLocation().search);
@@ -94,7 +94,7 @@ function ArticlePage() {
 					<h4 className="">{articleData.display_name}</h4>
 					<h6 className="text-muted">{articleData.brand_name}</h6>
 					<h6 className="text-muted">{articleData.colour}</h6>
-					<h5 className="py-4">{articleData.price} lei</h5>
+					<h5 className="py-4">{articleData.price} RON</h5>
 					<h6>Sizes</h6>
 					<Button
 						variant="outline-dark"

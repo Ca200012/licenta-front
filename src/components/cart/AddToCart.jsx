@@ -1,4 +1,4 @@
-import axiosClient from "../axios-client";
+import axiosClient from "../../axios-client";
 import { useState } from "react";
 import { Button } from "react-bootstrap";
 import React from "react";

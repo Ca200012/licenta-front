@@ -15,7 +15,7 @@
 }
 
 body {
-  background-image: url('../public/wp7953009.webp');
+  background-image: url('../wp7953009.webp');
   background-size: cover;
   background-repeat: no-repeat;
 }
@@ -99,4 +99,8 @@ button:focus-visible {
 
 .carousel {
   box-shadow: 0 0 4px #6f42c1, 0 0 4px #6f42c1;
+}
+
+.h-fit-content {
+  height: fit-content;
 }

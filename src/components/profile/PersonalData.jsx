@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
+import axiosClient from "../../axios-client";
 import { useForm } from "react-hook-form";
 import { Row, Col, Form, Button } from "react-bootstrap";
-import classes from "../Login/Login.module.css";
+
+import classes from "../../pages/Login/Login.module.css";
 import main_classes from "./PersonalData.module.css";
-import axiosClient from "../../axios-client";
+
 import { ListGroup, Alert } from "react-bootstrap";
 import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";

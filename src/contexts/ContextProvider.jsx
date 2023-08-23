@@ -3,13 +3,16 @@ import { createContext, useContext, useState } from "react";
 const StateContext = createContext({
 	user: null,
 	token: null,
-	setUser: () => {}, //for auto completion porposes
+	setUser: () => {},
 	setToken: () => {},
+	checkoutStarted: false,
+	setCheckoutStarted: () => {},
 });
 
 export const ContextProvider = ({ children }) => {
 	const [user, setUser] = useState({});
 	const [token, _setToken] = useState(localStorage.getItem("ACCESS_TOKEN"));
+	const [checkoutStarted, setCheckoutStarted] = useState(false);
 
 	const setToken = (token) => {
 		_setToken(token);
@@ -27,6 +30,8 @@ export const ContextProvider = ({ children }) => {
 				token,
 				setUser,
 				setToken,
+				checkoutStarted,
+				setCheckoutStarted,
 			}}
 		>
 			{children}

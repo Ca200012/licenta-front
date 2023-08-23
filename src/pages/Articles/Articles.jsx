@@ -364,7 +364,7 @@ function Articles() {
 									</Card.Subtitle>
 									<Row className="w-100 mx-0 px-0 d-flex justify-content-between align-items-center">
 										<Col className="px-0">
-											<Card.Text>{item.price} lei</Card.Text>
+											<Card.Text>{item.price} RON</Card.Text>
 										</Col>
 										<Col className="d-flex justify-content-end px-0">
 											<Button variant="light">
