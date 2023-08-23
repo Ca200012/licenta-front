@@ -10,6 +10,7 @@ import Returns from "./pages/Profile/Returns";
 import ContactUs from "./pages/Profile/ContactUs";
 import Articles from "./pages/Articles/Articles";
 import ArticlePage from "./pages/ArticlePage/ArticlePage";
+import Cart from "./pages/Cart/Cart";
 
 const router = createBrowserRouter([
 	{
@@ -57,6 +58,10 @@ const router = createBrowserRouter([
 			{
 				path: "/articlepage",
 				element: <ArticlePage />,
+			},
+			{
+				path: "/cart",
+				element: <Cart />,
 			},
 		],
 	},

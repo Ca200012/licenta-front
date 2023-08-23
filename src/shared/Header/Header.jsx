@@ -466,7 +466,7 @@ function Header() {
 										</>
 									)}
 								</NavDropdown>
-								<Nav.Link eventKey={2} href="#" className="mx-2 fw-bold">
+								<Nav.Link eventKey={2} href="/cart" className="mx-2 fw-bold">
 									<FontAwesomeIcon icon={faCartShopping} />
 								</Nav.Link>
 							</Nav>

@@ -1,6 +1,9 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import classes from "./ArticlePage.module.css";
 import axiosClient from "../../axios-client";
+import SizeGuide from "../../SizeGuide/SizeGuide";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
 
 import {
 	Container,
@@ -12,8 +15,7 @@ import {
 } from "react-bootstrap";
 import { useEffect, useState } from "react";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
+import AddToCart from "../../Cart/AddToCart";
 
 function useQuery() {
 	return new URLSearchParams(useLocation().search);
@@ -21,55 +23,21 @@ function useQuery() {
 
 function ArticlePage() {
 	const query = useQuery();
-	//const location = useLocation();
 	const encodedId = query.get("id");
 	const decodedId = atob(encodedId);
 
 	const [articleData, setArticleData] = useState([]);
+	const [selectedSize, setSelectedSize] = useState(null);
+
+	const isDisabledS = articleData.size_S_availability === 0;
+	const isDisabledM = articleData.size_M_availability === 0;
+	const isDisabledL = articleData.size_L_availability === 0;
+	const isDisabledXL = articleData.size_XL_availability === 0;
+	const isDisabledXXL = articleData.size_XXL_availability === 0;
 
 	useEffect(() => {
 		getArticleData(decodedId);
 	}, []);
-
-	const isDisabledS = !(
-		articleData.size_0 === "S" ||
-		articleData.size_1 === "S" ||
-		articleData.size_2 === "S" ||
-		articleData.size_3 === "S" ||
-		articleData.size_4 === "S"
-	);
-
-	const isDisabledM = !(
-		articleData.size_0 === "M" ||
-		articleData.size_1 === "M" ||
-		articleData.size_2 === "M" ||
-		articleData.size_3 === "M" ||
-		articleData.size_4 === "M"
-	);
-
-	const isDisabledL = !(
-		articleData.size_0 === "L" ||
-		articleData.size_1 === "L" ||
-		articleData.size_2 === "L" ||
-		articleData.size_3 === "L" ||
-		articleData.size_4 === "L"
-	);
-
-	const isDisabledXL = !(
-		articleData.size_0 === "XL" ||
-		articleData.size_1 === "XL" ||
-		articleData.size_2 === "XL" ||
-		articleData.size_3 === "XL" ||
-		articleData.size_4 === "XL"
-	);
-
-	const isDisabledXXL = !(
-		articleData.size_0 === "XXL" ||
-		articleData.size_1 === "XXL" ||
-		articleData.size_2 === "XXL" ||
-		articleData.size_3 === "XXL" ||
-		articleData.size_4 === "XXL"
-	);
 
 	const getArticleData = async (id) => {
 		try {
@@ -87,10 +55,6 @@ function ArticlePage() {
 			}
 		}
 	};
-
-	useEffect(() => {
-		console.log(articleData);
-	}, [articleData]);
 
 	return (
 		<Container
@@ -119,14 +83,9 @@ function ArticlePage() {
 								<img className="d-block w-100" src={articleData.first_image} />
 							</Carousel.Item>
 						)}
-						{/* {articleData.second_image && (
+						{articleData.second_image && (
 							<Carousel.Item>
 								<img className="d-block w-100" src={articleData.second_image} />
-							</Carousel.Item>
-						)} */}
-						{articleData.third_image && (
-							<Carousel.Item>
-								<img className="d-block w-100" src={articleData.third_image} />
 							</Carousel.Item>
 						)}
 					</Carousel>
@@ -142,6 +101,7 @@ function ArticlePage() {
 						className="me-2"
 						disabled={isDisabledS}
 						title="Add size S to cart"
+						onClick={() => setSelectedSize("S")}
 					>
 						S
 					</Button>
@@ -150,6 +110,7 @@ function ArticlePage() {
 						className="me-2"
 						disabled={isDisabledM}
 						title="Add size M to cart"
+						onClick={() => setSelectedSize("M")}
 					>
 						M
 					</Button>
@@ -158,6 +119,7 @@ function ArticlePage() {
 						className="me-2"
 						disabled={isDisabledL}
 						title="Add size L to cart"
+						onClick={() => setSelectedSize("L")}
 					>
 						L
 					</Button>
@@ -166,6 +128,7 @@ function ArticlePage() {
 						className="me-2"
 						disabled={isDisabledXL}
 						title="Add size XL to cart"
+						onClick={() => setSelectedSize("XL")}
 					>
 						XL
 					</Button>
@@ -174,36 +137,47 @@ function ArticlePage() {
 						className="me-2"
 						disabled={isDisabledXXL}
 						title="Add size XXL to cart"
+						onClick={() => setSelectedSize("XXL")}
 					>
 						XXL
 					</Button>
-					<Button variant="outline-dark" title="Add to cart">
-						<FontAwesomeIcon icon={faCartShopping} />
-					</Button>
+
+					<AddToCart
+						articleId={decodedId}
+						selectedSize={selectedSize}
+						size={"md"}
+						icon={faCartShopping}
+					/>
 
 					<Accordion defaultActiveKey="0" className="py-5">
 						<Accordion.Item eventKey="1">
 							<Accordion.Header>Description</Accordion.Header>
 							<Accordion.Body>
-								<h6
+								<p
 									dangerouslySetInnerHTML={{ __html: articleData.description }}
-								></h6>
+								></p>
 							</Accordion.Body>
 						</Accordion.Item>
 						<Accordion.Item eventKey="2">
 							<Accordion.Header>Shipping and payment</Accordion.Header>
 							<Accordion.Body>
-								<h6
-									dangerouslySetInnerHTML={{ __html: articleData.description }}
-								></h6>
+								<h6 className="fw-bold">Shipping</h6>
+								<p>
+									We offer fast and reliable shipping right to your doorstep or
+									to another location of your choosing, anywhere in Romania.
+								</p>
+								<h6 className="fw-bold">Payment</h6>
+								<p>
+									We make it easy to pay for your order securely. You can choose
+									from a card payment(VISA, MasterCard, Maestro) or for cash on
+									delivery.
+								</p>
 							</Accordion.Body>
 						</Accordion.Item>
 						<Accordion.Item eventKey="3">
 							<Accordion.Header>Size guide</Accordion.Header>
 							<Accordion.Body>
-								<h6
-									dangerouslySetInnerHTML={{ __html: articleData.description }}
-								></h6>
+								<SizeGuide />
 							</Accordion.Body>
 						</Accordion.Item>
 					</Accordion>

@@ -156,6 +156,17 @@ function Articles() {
 				});
 			}
 
+			if (currentFilters["Pattern"]) {
+				currentFilters["Pattern"].map((item, index) => {
+					if (!verif) {
+						url += `?pattern${index}=${item}`;
+						verif = 1;
+					} else {
+						url += `&pattern${index}=${item}`;
+					}
+				});
+			}
+
 			console.log(url);
 			const response = await axiosClient.get(url);
 			const data = response.data.data;
