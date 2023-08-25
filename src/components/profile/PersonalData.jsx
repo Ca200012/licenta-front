@@ -14,6 +14,8 @@ import Placeholder from "react-bootstrap/Placeholder";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import Loading from "../Loading";
+
 import {
 	faIdCard,
 	faEnvelope,
@@ -42,6 +44,7 @@ function PersonalData() {
 	const [city, setCity] = useState([]);
 	const [options, setOptions] = useState([]);
 	const [searchText, setSearchText] = useState("");
+
 	let searchTimeout = null;
 
 	const {
@@ -299,152 +302,117 @@ function PersonalData() {
 							<h3>Personal data</h3>
 						</Col>
 					</Row>
-					<Row className="w-100 m-0">
-						<Col className="py-2">
-							<h5 className="ms-5">Details</h5>
-						</Col>
-					</Row>
-					<Row className="w-100 m-0">
-						<Col>
-							<ListGroup variant="flush">
-								<ListGroup.Item>
-									{isLoading && (
-										<Placeholder as="span" animation="glow">
-											<Placeholder xs={12} />
-										</Placeholder>
-									)}
-									{!isLoading && (
-										<>
+					{isLoading && <Loading />}
+					{!isLoading && (
+						<>
+							<Row className="w-100 m-0">
+								<Col className="py-2">
+									<h5 className="ms-5">Details</h5>
+								</Col>
+							</Row>
+							<Row className="w-100 m-0">
+								<Col>
+									<ListGroup variant="flush">
+										<ListGroup.Item>
 											<FontAwesomeIcon icon={faIdCard} className="me-2" />
 											{`First name: ${userData?.last_name}`}
-										</>
-									)}
-								</ListGroup.Item>
+										</ListGroup.Item>
 
-								<ListGroup.Item>
-									{isLoading && (
-										<Placeholder as="span" animation="glow">
-											<Placeholder xs={12} />
-										</Placeholder>
-									)}
-									{!isLoading && (
-										<>
+										<ListGroup.Item>
 											<FontAwesomeIcon icon={faIdCard} className="me-2" />
 											{`Last name: ${userData?.first_name}`}
-										</>
-									)}
-								</ListGroup.Item>
+										</ListGroup.Item>
 
-								<ListGroup.Item>
-									{isLoading && (
-										<Placeholder as="span" animation="glow">
-											<Placeholder xs={12} />
-										</Placeholder>
-									)}
-									{!isLoading && (
-										<>
+										<ListGroup.Item>
 											<FontAwesomeIcon icon={faEnvelope} className="me-2" />
 											{`Email: ${userData?.email}`}
-										</>
-									)}
-								</ListGroup.Item>
+										</ListGroup.Item>
 
-								<ListGroup.Item>
-									{isLoading && (
-										<Placeholder as="span" animation="glow">
-											<Placeholder xs={12} />
-										</Placeholder>
-									)}
-									{!isLoading && (
-										<>
+										<ListGroup.Item>
 											<FontAwesomeIcon icon={faPhone} className="me-2" />
 											{`Phone number: ${userData?.phone_number}`}
-										</>
-									)}
-								</ListGroup.Item>
-								<ListGroup.Item>
-									{isLoading && (
-										<Placeholder as="span" animation="glow">
-											<Placeholder xs={12} />
-										</Placeholder>
-									)}
-									{!isLoading && (
-										<>
+										</ListGroup.Item>
+										<ListGroup.Item>
 											<FontAwesomeIcon icon={faCalendarDay} className="me-2" />
 											Date of birth:{" "}
 											{userData?.date_of_birth != null
 												? userData?.date_of_birth
 												: "-"}
-										</>
-									)}
-								</ListGroup.Item>
-							</ListGroup>
-							<Button
-								variant="primary"
-								size="xs"
-								className={`${classes.grad} my-3`}
-								onClick={() => setShowDataForm(!showDataForm)}
-							>
-								Edit
-							</Button>
-						</Col>
-					</Row>
-					<Row className="w-100 m-0">
-						<Col className="py-2">
-							<h5 className="ms-5">Adresses</h5>
-						</Col>
-					</Row>
-					<Row className="w-100 m-0">
-						<Col className="px-3">
-							<ListGroup variant="flush">
-								{Array.isArray(address) &&
-									address.map((item, index) => (
-										<ListGroup.Item
-											key={index}
-											className="d-flex flex-row align-items-center justify-content-between"
-										>
-											{isLoading ? (
-												<Placeholder as="span" animation="glow">
-													<Placeholder xs={12} />
-												</Placeholder>
-											) : (
-												<>
-													<div>
-														<FontAwesomeIcon icon={faHouse} className="me-2" />
-														{`Adress ${index + 1}: `}
-														{item.value}
-													</div>
-													<div>
-														<Link onClick={() => editAddress(item.address_id)}>
-															<FontAwesomeIcon
-																icon={faPenToSquare}
-																className="me-2"
-															/>
-														</Link>
-
-														<FontAwesomeIcon icon={faTrash} />
-													</div>
-												</>
-											)}
 										</ListGroup.Item>
-									))}
-							</ListGroup>
-						</Col>
-					</Row>
-					<Row className="w-100 m-0">
-						<Col>
-							<ListGroup variant="flush"></ListGroup>
-							<Button
-								variant="primary"
-								size="xs"
-								className={`${classes.grad} my-3`}
-								onClick={() => setShowAddressForm(!showAddressForm)}
-							>
-								Add an address
-								{/* <FontAwesomeIcon icon={faPenToSquare} /> */}
-							</Button>
-						</Col>
-					</Row>
+									</ListGroup>
+									<Button
+										variant="primary"
+										size="xs"
+										className={`${classes.grad} my-3`}
+										onClick={() => setShowDataForm(!showDataForm)}
+									>
+										Edit
+									</Button>
+								</Col>
+							</Row>
+							<Row className="w-100 m-0">
+								<Col className="py-2">
+									<h5 className="ms-5">Adresses</h5>
+								</Col>
+							</Row>
+							<Row className="w-100 m-0">
+								<Col className="px-3">
+									<ListGroup variant="flush">
+										{Array.isArray(address) &&
+											address.map((item, index) => (
+												<ListGroup.Item
+													key={index}
+													className="d-flex flex-row align-items-center justify-content-between"
+												>
+													{isLoading ? (
+														<Placeholder as="span" animation="glow">
+															<Placeholder xs={12} />
+														</Placeholder>
+													) : (
+														<>
+															<div>
+																<FontAwesomeIcon
+																	icon={faHouse}
+																	className="me-2"
+																/>
+																{`Adress ${index + 1}: `}
+																{item.value}
+															</div>
+															<div>
+																<Link
+																	onClick={() => editAddress(item.address_id)}
+																>
+																	<FontAwesomeIcon
+																		icon={faPenToSquare}
+																		className="me-2"
+																	/>
+																</Link>
+
+																<FontAwesomeIcon icon={faTrash} />
+															</div>
+														</>
+													)}
+												</ListGroup.Item>
+											))}
+									</ListGroup>
+								</Col>
+							</Row>
+							<Row className="w-100 m-0">
+								<Col>
+									<ListGroup variant="flush"></ListGroup>
+									<Button
+										variant="primary"
+										size="xs"
+										className={`${classes.grad} my-3`}
+										onClick={() => setShowAddressForm(!showAddressForm)}
+									>
+										Add an address
+										{/* <FontAwesomeIcon icon={faPenToSquare} /> */}
+									</Button>
+								</Col>
+							</Row>
+						</>
+					)}
 				</>
 			)}
 			{showDataForm && (

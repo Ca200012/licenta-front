@@ -4,6 +4,7 @@ import axiosClient from "../../axios-client";
 
 import AddToCart from "../../components/cart/AddToCart";
 import RemoveFromCart from "../../components/cart/RemoveFromCart";
+import Loading from "../../components/Loading";
 
 import { Container, Row, Card, Col, Button } from "react-bootstrap";
 import classes from "./Cart.module.css";
@@ -52,8 +53,8 @@ function Cart() {
 				}
 			}
 		} finally {
-			await setIsLoaded(true);
-			console.log(isLoaded, articles);
+			setIsLoaded(true);
+			//console.log(isLoaded, articles);
 		}
 	};
 
@@ -74,7 +75,7 @@ function Cart() {
 				</Col>
 			</Row>
 			<Row className="w-100 mx-0 bg-light py-3 px-3">
-				{!isLoaded && <>Loading ...</>}
+				{!isLoaded && <Loading />}
 
 				{articles?.length > 0 && isLoaded && (
 					<>
@@ -90,7 +91,7 @@ function Cart() {
 							{match ? (
 								<>
 									{articles?.map((item, index) => (
-										<Card key={index} className="border rounded-2">
+										<Card key={index} className="border rounded-2 mb-3">
 											<Row className="w-100 m-0">
 												<Col xl={2} lg={2} md={2} sm={4} xs={4} className="p-0">
 													<img
@@ -215,7 +216,7 @@ function Cart() {
 										{orderPrice > 300 ? (
 											<h6>{orderPrice} RON</h6>
 										) : (
-											<p>{orderPrice ?? 0 + 15.99} RON</p>
+											<p>{orderPrice + 15.99} RON</p>
 										)}
 									</Col>
 								</Row>
@@ -231,7 +232,7 @@ function Cart() {
 											}}
 											disabled={articles?.length === 0}
 										>
-											Continue checkout
+											{match ? "Continue checkout" : "Send order"}
 										</Button>
 									</Col>
 								</Row>
@@ -246,14 +247,14 @@ function Cart() {
 					</>
 				)}
 
-				{articles?.length < 1 && isLoaded && (
+				{!articles && isLoaded && (
 					<Col className="d-flex justify-content-center">
 						<img
 							alt="no_items"
 							src="/no_items_in_cart_2.jpg"
 							fluid="true"
 							width={500}
-							className="border rounded mtmw-100"
+							className="border rounded mw-100"
 						/>
 					</Col>
 				)}

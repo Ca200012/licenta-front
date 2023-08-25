@@ -5,7 +5,7 @@ import { useStateContext } from "../contexts/ContextProvider";
 
 function ProtectedCheckoutRoute({ children }) {
 	const { checkoutStarted } = useStateContext();
-	console.log(checkoutStarted);
+	//console.log(checkoutStarted);
 
 	if (!checkoutStarted) {
 		return <Navigate to="/cart" replace />;
