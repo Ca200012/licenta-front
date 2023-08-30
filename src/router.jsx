@@ -12,6 +12,7 @@ import Returns from "./components/profile/Returns";
 
 import Articles from "./pages/Articles/Articles";
 import ArticlePage from "./pages/ArticlePage/ArticlePage";
+import OrderPage from "./components/profile/OrderPage";
 
 import Cart from "./pages/Cart/Cart";
 import Checkout from "./components/cart/Checkout";
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
 					{
 						path: "/profile/orders",
 						element: <Orders />,
+					},
+					{
+						path: "/profile/orderpage",
+						element: <OrderPage />,
 					},
 					{
 						path: "/profile/returns",

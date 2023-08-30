@@ -7,12 +7,18 @@ const StateContext = createContext({
 	setToken: () => {},
 	checkoutStarted: false,
 	setCheckoutStarted: () => {},
+	orderConfirmed: false,
+	setOrderConfirmed: () => {},
+	selectedAddress: null,
+	setSelectedAddress: () => {},
 });
 
 export const ContextProvider = ({ children }) => {
 	const [user, setUser] = useState({});
 	const [token, _setToken] = useState(localStorage.getItem("ACCESS_TOKEN"));
 	const [checkoutStarted, setCheckoutStarted] = useState(false);
+	const [orderConfirmed, setOrderConfirmed] = useState(false);
+	const [selectedAddress, setSelectedAddress] = useState(null);
 
 	const setToken = (token) => {
 		_setToken(token);
@@ -32,6 +38,10 @@ export const ContextProvider = ({ children }) => {
 				setToken,
 				checkoutStarted,
 				setCheckoutStarted,
+				orderConfirmed,
+				setOrderConfirmed,
+				selectedAddress,
+				setSelectedAddress,
 			}}
 		>
 			{children}

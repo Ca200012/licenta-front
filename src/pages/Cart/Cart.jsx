@@ -19,11 +19,18 @@ function Cart() {
 	const match = useMatch("/cart");
 
 	const navigate = useNavigate();
-	const { checkoutStarted, setCheckoutStarted } = useStateContext();
+	const {
+		setCheckoutStarted,
+		orderConfirmed,
+		setOrderConfirmed,
+		selectedAddress,
+	} = useStateContext();
 
 	const [articles, setArticles] = useState([]);
 	const [isLoaded, setIsLoaded] = useState(false);
 	const [orderPrice, setOrderPrice] = useState(null);
+	const [orderId, setOrderId] = useState(null);
+	const [message, setMessage] = useState(null);
 
 	useEffect(() => {
 		getArticlesFromCart();
@@ -42,7 +49,7 @@ function Cart() {
 			const response = await axiosClient.get("/cartarticles");
 			const data = response.data.data;
 			setArticles(data.articles);
-			setOrderPrice(data.total_order_price);
+			setOrderPrice(data.total_cart_price);
 			setCheckoutStarted(data.is_checkout_started ? true : false);
 			return data;
 		} catch (err) {
@@ -56,6 +63,38 @@ function Cart() {
 			setIsLoaded(true);
 			//console.log(isLoaded, articles);
 		}
+	};
+
+	const handleOrderConfirmation = async () => {
+		console.log("Order confirmed");
+
+		const randomNumber = Math.floor(Math.random() * 900000) + 100000;
+		const orderId = parseInt(`1001${randomNumber}`);
+		setOrderId(orderId);
+		setOrderConfirmed(true);
+
+		const payload = {
+			address_id: selectedAddress,
+			order_id: orderId,
+		};
+
+		try {
+			const response = await axiosClient.post("/addorder", payload);
+			const data = response.data.data;
+			setMessage(data);
+			return data;
+		} catch (err) {
+			const response = err.response;
+			if (response && response.status !== 200) {
+				if (response.data.errors) {
+					console.log(response.data.errors, "check errors");
+				}
+			}
+		} finally {
+			setIsLoaded(true);
+		}
+
+		navigate("/cart");
 	};
 
 	return (
@@ -77,7 +116,7 @@ function Cart() {
 			<Row className="w-100 mx-0 bg-light py-3 px-3">
 				{!isLoaded && <Loading />}
 
-				{articles?.length > 0 && isLoaded && (
+				{articles?.length > 0 && isLoaded && !orderConfirmed && (
 					<>
 						<Col
 							xl={8}
@@ -173,7 +212,7 @@ function Cart() {
 													<Row>
 														<Col>
 															Total price: {"  "}
-															{item.total_price} RON
+															{item.price} RON
 														</Col>
 													</Row>
 												</Col>
@@ -185,65 +224,72 @@ function Cart() {
 								<Outlet />
 							)}
 						</Col>
+						{!orderConfirmed && (
+							<Col
+								xl={4}
+								lg={4}
+								md={12}
+								sm={12}
+								xs={12}
+								className="mt-3 h-fit-content"
+								style={{ order: window.innerWidth <= 992 ? 1 : 2 }}
+							>
+								<div className="border rounded-2 p-3 bg-white">
+									<Row>
+										<Col>Total article price:</Col>
+										<Col className="text-end">{orderPrice} RON</Col>
+									</Row>
 
-						<Col
-							xl={4}
-							lg={4}
-							md={12}
-							sm={12}
-							xs={12}
-							className="mt-3 h-fit-content"
-							style={{ order: window.innerWidth <= 992 ? 1 : 2 }}
-						>
-							<div className="border rounded-2 p-3 bg-white">
-								<Row>
-									<Col>Total article price:</Col>
-									<Col className="text-end">{orderPrice ?? 0} RON</Col>
-								</Row>
+									<Row>
+										<Col>Delivery:</Col>
+										<Col className="text-end">
+											{orderPrice > 300 ? <p>FREE</p> : <p>15.99 RON</p>}
+										</Col>
+									</Row>
 
-								<Row>
-									<Col>Delivery:</Col>
-									<Col className="text-end">
-										{orderPrice > 300 ? <p>FREE</p> : <p>15.99 RON</p>}
-									</Col>
-								</Row>
-
-								<Row>
-									<Col>
-										<h6>Total order price:</h6>
-									</Col>
-									<Col className="text-end">
-										{orderPrice > 300 ? (
-											<h6>{orderPrice} RON</h6>
-										) : (
-											<p>{orderPrice + 15.99} RON</p>
-										)}
-									</Col>
-								</Row>
-								<Row>
-									<Col>
-										<Button
-											variant="primary"
-											size="xs"
-											className={`${classes.grad} mx-0 w-100`}
-											onClick={() => {
-												markStartedCheckout();
-												navigate("/cart/checkout");
-											}}
-											disabled={articles?.length === 0}
-										>
-											{match ? "Continue checkout" : "Send order"}
-										</Button>
-									</Col>
-								</Row>
-								<Row>
-									<Col className="d-flex align-items-center">
-										<FontAwesomeIcon icon={faTruck} className="my-3 me-2" />
-										<p className="m-0">Free delivery on orders over 300 RON.</p>
-									</Col>
-								</Row>
-							</div>
-						</Col>
+									<Row>
+										<Col>
+											<h6>Total order price:</h6>
+										</Col>
+										<Col className="text-end">
+											{orderPrice > 300 ? (
+												<h6>{orderPrice} RON</h6>
+											) : (
+												<p>{orderPrice + 15.99} RON</p>
+											)}
+										</Col>
+									</Row>
+									<Row>
+										<Col>
+											<Button
+												variant="primary"
+												size="xs"
+												className={`${classes.grad} mx-0 w-100`}
+												onClick={() => {
+													if (match) {
+														markStartedCheckout();
+														navigate("/cart/checkout");
+													} else if (!match && selectedAddress != null) {
+														handleOrderConfirmation();
+													}
+												}}
+												disabled={articles?.length === 0}
+											>
+												{match ? "Continue checkout" : "Send order"}
+											</Button>
+										</Col>
+									</Row>
+									<Row>
+										<Col className="d-flex align-items-center">
+											<FontAwesomeIcon icon={faTruck} className="my-3 me-2" />
+											<p className="m-0">
+												Free delivery on orders over 300 RON.
+											</p>
+										</Col>
+									</Row>
+								</div>
+							</Col>
+						)}
 					</>
 				)}
 
@@ -256,6 +302,26 @@ function Cart() {
 							width={500}
 							className="border rounded mw-100"
 						/>
+					</Col>
+				)}
+				{orderConfirmed && isLoaded && (
+					<Col className="d-flex justify-content-center my-3">
+						<Row>
+							<Col>
+								<h2>Thank you for your order!</h2>
+								<h4 className="text-center my-3">
+									Your order number is {orderId}
+								</h4>
+								<Button
+									onClick={() => {
+										navigate("/profile/orders");
+									}}
+									className={`${classes.grad} mx-0 w-100`}
+								>
+									Go to your orders
+								</Button>
+							</Col>
+						</Row>
 					</Col>
 				)}
 			</Row>

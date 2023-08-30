@@ -18,14 +18,19 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 const Checkout = () => {
-	const { checkoutStarted } = useStateContext();
+	const {
+		orderConfirmed,
+		checkoutStarted,
+		selectedAddress,
+		setSelectedAddress,
+	} = useStateContext();
 	const navigate = useNavigate();
 
 	const [userData, setUserData] = useState([]);
 	const [userAddresses, setUserAddresses] = useState([]);
-	const [selectedAddress, setSelectedAddress] = useState(null);
 	const [dropdownOpen, setDropdownOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
+	const [selectedAddressName, setSelectedAddressName] = useState(null);
 
 	if (!checkoutStarted) {
 		navigate("/cart");
@@ -77,7 +82,7 @@ const Checkout = () => {
 	return (
 		<>
 			{isLoading && <Loading />}
-			{!isLoading && (
+			{!isLoading && !orderConfirmed && (
 				<>
 					<Card className="border rounded-2 mb-2">
 						<Card.Body>
@@ -142,21 +147,24 @@ const Checkout = () => {
 													variant="outline-dark"
 													id="address-dropdown"
 												>
-													{selectedAddress || "Please select an address"}
+													{selectedAddressName || "Please select an address"}
 												</Dropdown.Toggle>
 
 												<Dropdown.Menu>
 													{userAddresses?.map((item, index) => (
 														<Dropdown.Item
 															key={index}
-															onClick={() => setSelectedAddress(item.value)}
+															onClick={() => {
+																setSelectedAddress(item.address_id);
+																setSelectedAddressName(item.value);
+															}}
 														>
 															<Form.Check
 																type="radio"
 																name="address"
 																value={item.value}
 																label={item.value}
-																checked={selectedAddress === item.value}
+																checked={selectedAddressName === item.value}
 																onChange={() => {}}
 																className=" d-flex align-items-center label-parent"
 															/>
@@ -228,7 +236,7 @@ const Checkout = () => {
 												{selectedAddress && (
 													<>
 														<FontAwesomeIcon icon={faTruck} className="me-2" />
-														{selectedAddress}
+														{selectedAddressName}
 													</>
 												)}
 											</Col>
