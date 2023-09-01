@@ -104,7 +104,7 @@ button:focus-visible {
 }
 
 .h-fit-content {
-  height: fit-content;
+  height: fit-content !important;
 }
 /* loading */
 .lds-ripple {

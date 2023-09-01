@@ -30,6 +30,7 @@ function ArticlePage() {
 	const [articleData, setArticleData] = useState([]);
 	const [selectedSize, setSelectedSize] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
+	const [message, setMessage] = useState(null);
 
 	const isDisabledS = articleData.size_S_availability === 0;
 	const isDisabledM = articleData.size_M_availability === 0;
@@ -38,8 +39,14 @@ function ArticlePage() {
 	const isDisabledXXL = articleData.size_XXL_availability === 0;
 
 	useEffect(() => {
+		document.title = "Article Page";
 		getArticleData(decodedId);
+		addViewedArticle(decodedId);
 	}, []);
+
+	useEffect(() => {
+		console.log(message);
+	}, [message]);
 
 	const getArticleData = async (id) => {
 		try {
@@ -60,9 +67,35 @@ function ArticlePage() {
 		}
 	};
 
+	const addViewedArticle = async (id) => {
+		if (!id) {
+			console.error("Article ID or selected size is missing.");
+			return;
+		}
+
+		const payload = {
+			article_id: id,
+		};
+
+		try {
+			const response = await axiosClient.post("/viewedarticle", payload);
+			const data = response.data;
+			setMessage(data.message);
+			if (onAdd) onAdd();
+		} catch (err) {
+			console.error(err);
+			const response = err.response;
+			if (response && response.status !== 200) {
+				if (response.data.errors) {
+					console.error(response.data.errors, "check errors");
+				}
+			}
+		}
+	};
+
 	return (
 		<Container
-			className={`${classes.cover} d-flex align-items-center flex-fill flex-column position-relative p-0 pt-5`}
+			className={`${classes.cover} d-flex align-items-center flex-fill flex-column position-relative p-0 py-5`}
 		>
 			<Row className="w-100 mx-0">
 				<Col

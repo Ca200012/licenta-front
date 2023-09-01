@@ -8,18 +8,19 @@ import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
 import { faMinus } from "@fortawesome/free-solid-svg-icons";
 
 function RemoveFromCart(props) {
-	const { articleId, size, icon, onRemove } = props;
+	const { articleId, selectedSize, size, icon, onRemove } = props;
 
 	const [message, setMessage] = useState(null);
 
 	const handleRemoveFromCart = async () => {
-		if (!articleId) {
-			console.error("Article ID is missing.");
+		if (!articleId || !selectedSize) {
+			console.error("Article ID or selected size is missing.");
 			return;
 		}
 
 		const payload = {
 			id: articleId,
+			size: selectedSize,
 			delete_all: icon == faTrashCan ? true : false,
 		};
 

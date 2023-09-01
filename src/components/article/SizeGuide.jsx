@@ -1,8 +1,9 @@
 import React from "react";
+import { Col } from "react-bootstrap";
 
 const SizeGuide = () => {
 	return (
-		<div>
+		<Col>
 			<h4>Size Guide</h4>
 			<p>
 				Choosing the right size ensures a comfortable fit. Refer to our size
@@ -40,7 +41,7 @@ const SizeGuide = () => {
 				<li>XL: Height 16", Width 14", Depth 7"</li>
 				<li>XXL: Height 18", Width 16", Depth 8"</li>
 			</ul>
-		</div>
+		</Col>
 	);
 };
 

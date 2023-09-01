@@ -39,9 +39,13 @@ function Profile() {
 		return <Navigate to="/" />;
 	}
 
+	if (match) {
+		return <Navigate to="/profile/personal-data" />;
+	}
+
 	return (
 		<Container
-			className={`${classes.cover} d-flex align-items-center flex-fill flex-column position-relative p-0 pt-5`}
+			className={`${classes.cover} d-flex align-items-center flex-fill flex-column position-relative p-0 py-5`}
 		>
 			<Row className="w-100 m-0">
 				<Col

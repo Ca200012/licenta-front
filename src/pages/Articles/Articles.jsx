@@ -40,6 +40,7 @@ function Articles() {
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
+		document.title = "Articles";
 		setIsLoading(true);
 		getArticles();
 	}, [location]);
@@ -209,7 +210,7 @@ function Articles() {
 				<FontAwesomeIcon icon={faArrowUp} />
 			</Button>
 			<Container
-				className={`${classes.cover} d-flex align-items-center flex-fill flex-column position-relative p-0 pt-5`}
+				className={`${classes.cover} d-flex align-items-center flex-fill flex-column position-relative p-0 py-5`}
 			>
 				<Row className="w-100 mx-0">
 					<Col
@@ -261,8 +262,11 @@ function Articles() {
 									<Form onSubmit={handleFormSubmit} className="w-100">
 										<Row className="d-flex flex-xl-nowrap flex-lg-nowrap flex-md-nowrap align-items-center justify-content-sm-center justify-content-xs-center">
 											{filters.map((filter, index) => (
-												<Col className="d-flex justify-content-sm-center justify-content-xs-center">
-													<Dropdown key={index}>
+												<Col
+													key={index}
+													className="d-flex justify-content-sm-center justify-content-xs-center"
+												>
+													<Dropdown>
 														<Dropdown.Toggle variant="light">
 															{filter.title}
 														</Dropdown.Toggle>

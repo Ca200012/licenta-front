@@ -38,6 +38,7 @@ const Checkout = () => {
 	}
 
 	useEffect(() => {
+		document.title = "Checkout";
 		getUserData();
 		getUserAddresses();
 	}, []);

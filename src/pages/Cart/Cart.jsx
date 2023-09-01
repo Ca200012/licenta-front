@@ -33,6 +33,7 @@ function Cart() {
 	const [message, setMessage] = useState(null);
 
 	useEffect(() => {
+		document.title = "Cart";
 		getArticlesFromCart();
 	}, []);
 
@@ -166,7 +167,8 @@ function Cart() {
 															className="d-flex justify-content-end align-items-center"
 														>
 															<RemoveFromCart
-																articleId={item.id}
+																articleId={item.article_id}
+																selectedSize={item.selected_size}
 																size={"md"}
 																icon={faTrashCan}
 																onRemove={refreshCart}
@@ -191,7 +193,8 @@ function Cart() {
 															<>
 																Quantity: {"  "}
 																<RemoveFromCart
-																	articleId={item.id}
+																	articleId={item.article_id}
+																	selectedSize={item.selected_size}
 																	size={"sm"}
 																	icon={faMinus}
 																	onRemove={refreshCart}

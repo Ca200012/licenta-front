@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useStateContext } from "../../contexts/ContextProvider";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../../axios-client";
+import classes from "./Header.module.css";
 import {
 	Col,
 	Row,
@@ -133,7 +134,7 @@ function Header() {
 
 	return (
 		<>
-			<Navbar bg="light" variant="light" className="px-0">
+			<Navbar bg="light" variant="light" className={`${classes.shadow} px-0`}>
 				<Container fluid className="p-0 m-0">
 					{" "}
 					<Row className="w-100 d-flex justify-content-between">
@@ -428,10 +429,6 @@ function Header() {
 										))
 									)}
 								</NavDropdown>
-								<Nav.Link href="#" className="mx-3 fw-bold">
-									<FontAwesomeIcon icon={faFire} bounce className="me-1" />
-									Sales
-								</Nav.Link>
 							</Nav>
 						</Col>
 						<Col className="d-flex align-items-center justify-content-end pe-0">

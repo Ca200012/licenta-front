@@ -75,7 +75,7 @@ function Orders() {
 														md={12}
 														sm={12}
 														xs={12}
-														className="fw-bold"
+														className="fw-bold d-flex "
 													>
 														Order{"  "}
 														{item.order_id}
@@ -86,7 +86,7 @@ function Orders() {
 														md={12}
 														sm={12}
 														xs={12}
-														className="d-flex justify-content-end"
+														className="d-flex justify-content-xl-end justify-content-lg-end"
 													>
 														{item.order_date}
 													</Col>
@@ -96,11 +96,18 @@ function Orders() {
 										<Row className="w-100 m-0">
 											<Col className="pb-1">
 												<Row className="d-flex">
-													<Col>
+													<Col xl={6} lg={6} md={12} sm={12} xs={12}>
 														Status:{"  "}
 														{item.status}
 													</Col>
-													<Col className="d-flex justify-content-end align-items-center">
+													<Col
+														xl={6}
+														lg={6}
+														md={12}
+														sm={12}
+														xs={12}
+														className="d-flex justify-content-xl-end justify-content-lg-end align-items-center"
+													>
 														Price: {"  "}
 														{item.price} RON
 													</Col>
@@ -127,6 +134,19 @@ function Orders() {
 								</Link>
 							);
 						})}
+					</Col>
+				</Row>
+			)}
+			{!isLoading && orders?.length == 0 && (
+				<Row>
+					<Col className="d-flex justify-content-center">
+						<img
+							alt="no_items"
+							src="/no_orders_found.png"
+							fluid="true"
+							width={300}
+							className="border rounded mw-100 mb-5"
+						/>
 					</Col>
 				</Row>
 			)}

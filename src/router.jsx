@@ -18,6 +18,8 @@ import Cart from "./pages/Cart/Cart";
 import Checkout from "./components/cart/Checkout";
 
 import ProtectedCheckoutRoute from "./guards/ProtectedCheckoutRoute";
+import SizeGuidePage from "./pages/SizeGuidePage/SizeGuidePage";
+import ReturnPolicyPage from "./pages/ReturnPolicyPage/ReturnPolicyPage";
 
 const router = createBrowserRouter([
 	{
@@ -83,6 +85,14 @@ const router = createBrowserRouter([
 						),
 					},
 				],
+			},
+			{
+				path: "/sizeguidepage",
+				element: <SizeGuidePage />,
+			},
+			{
+				path: "/returnpolicy",
+				element: <ReturnPolicyPage />,
 			},
 		],
 	},
