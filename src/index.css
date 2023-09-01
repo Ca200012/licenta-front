@@ -153,3 +153,8 @@ button:focus-visible {
     opacity: 0;
   }
 }
+
+.women_button, .men_button {
+  bottom: 15px;
+  right: 15px;
+}

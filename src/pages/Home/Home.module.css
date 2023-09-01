@@ -1,3 +1,30 @@
 .text_center{
     text-align: center;
 }
+
+.cover{
+    background-size: cover;
+	background-position: center center;
+}
+
+.header {
+    background-image: linear-gradient(to right, #4776E6 0%, #8E54E9 51%, #4776E6 100%);
+    color: white !important;
+}
+
+.shadow {
+    box-shadow: rgba(0, 0, 0, 0.45) 0px 25px 20px -20px;
+    z-index: 999;
+}
+
+.hoverable_element {
+    position: relative;
+    box-shadow: 0 0 0px white;
+    transition: box-shadow .3s ease-in-out, transform .3s ease-in-out;
+  }
+  
+.hoverable_element:hover {
+    box-shadow: 0 0 4px #6f42c1, 0 0 4px #6f42c1;
+    transform: scale(1.03);
+    z-index: 10;
+}

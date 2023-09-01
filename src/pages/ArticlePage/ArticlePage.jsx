@@ -1,8 +1,7 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import classes from "./ArticlePage.module.css";
 import axiosClient from "../../axios-client";
 import SizeGuide from "../../components/article/SizeGuide";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
 
 import {
@@ -17,6 +16,7 @@ import { useEffect, useState } from "react";
 
 import AddToCart from "../../components/cart/AddToCart";
 import Loading from "../../components/Loading";
+import RecentlyViewedArticles from "../../components/article/RecentlyViewedArticles/RecentlyViewedArticles";
 
 function useQuery() {
 	return new URLSearchParams(useLocation().search);
@@ -238,6 +238,7 @@ function ArticlePage() {
 					</>
 				)}
 			</Row>
+			<RecentlyViewedArticles />
 		</Container>
 	);
 }
