@@ -14,11 +14,14 @@ import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
 import { faMinus, faPlus, faTruck } from "@fortawesome/free-solid-svg-icons";
 
 import { useStateContext } from "../../contexts/ContextProvider";
+import CustomAlert from "../../components/CustomAlert";
 
 function Cart() {
   const match = useMatch("/cart");
-
   const navigate = useNavigate();
+
+  const { token } = useStateContext();
+
   const {
     setCheckoutStarted,
     orderConfirmed,
@@ -26,19 +29,72 @@ function Cart() {
     selectedAddress,
   } = useStateContext();
 
+  const [alert, setAlert] = useState({
+    variant: "primary",
+    message: null,
+    visible: false,
+  });
+
   const [articles, setArticles] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [orderPrice, setOrderPrice] = useState(null);
   const [orderId, setOrderId] = useState(null);
-  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     document.title = "Cart";
     getArticlesFromCart();
   }, []);
 
-  const refreshCart = () => {
+  useEffect(() => {
+    let timer;
+    if (alert.visible) {
+      timer = setTimeout(() => {
+        setAlert((prevAlert) => ({ ...prevAlert, visible: false }));
+      }, 5000);
+    }
+    return () => clearTimeout(timer);
+  }, [alert.visible]);
+
+  const handleAdd = () => {
     getArticlesFromCart();
+    setAlert({
+      variant: "success",
+      message: "Item successfully added to cart!",
+      visible: true,
+    });
+  };
+
+  const handleRemove = () => {
+    getArticlesFromCart();
+    setAlert({
+      variant: "success",
+      message: "Item successfully removed from cart!",
+      visible: true,
+    });
+  };
+
+  const handleNotAdd = (err) => {
+    setAlert({
+      variant: "danger",
+      message: err,
+      visible: true,
+    });
+  };
+
+  const handleNotRemove = (err) => {
+    setAlert({
+      variant: "danger",
+      message: err,
+      visible: true,
+    });
+  };
+
+  const displayAddressError = () => {
+    setAlert({
+      variant: "danger",
+      message: "Please select an address first!",
+      visible: true,
+    });
   };
 
   const markStartedCheckout = async () => {
@@ -46,9 +102,17 @@ function Cart() {
   };
 
   const getArticlesFromCart = async () => {
+    if (token) {
+      await getArticlesFromDb();
+    } else {
+      await getArticlesFromLs();
+    }
+  };
+
+  const getArticlesFromDb = async () => {
     try {
-      const response = await axiosClient.get("/cartarticles");
-      const data = response.data.data;
+      const response = await axiosClient.post("/cartarticles", {});
+      const data = await response.data.data;
       setArticles(data.articles);
       setOrderPrice(data.total_cart_price);
       setCheckoutStarted(data.is_checkout_started ? true : false);
@@ -57,18 +121,55 @@ function Cart() {
       const response = err.response;
       if (response && response.status !== 200) {
         if (response.data.errors) {
-          console.log(response.data.errors, "check errors");
         }
       }
     } finally {
       setIsLoaded(true);
-      //console.log(isLoaded, articles);
+    }
+  };
+
+  const getArticlesFromLs = async () => {
+    const existingArticles = localStorage.getItem("articles");
+
+    let articlesArray = [];
+
+    if (existingArticles) {
+      articlesArray = JSON.parse(existingArticles);
+    } else {
+      setArticles([]);
+      setIsLoaded(true);
+      return;
+    }
+
+    try {
+      const response = await axiosClient.post("/cartarticles", {
+        articles: articlesArray,
+      });
+      const data = await response.data.data;
+
+      setArticles(data.articles);
+      setCheckoutStarted(data.is_checkout_started ? true : false);
+
+      if (data.total_cart_price == 0) {
+        let total_price = 0;
+        data.articles.forEach((item) => {
+          total_price += item.price;
+        });
+        setOrderPrice(total_price);
+      }
+      return;
+    } catch (err) {
+      const response = err.response;
+      if (response && response.status !== 200) {
+        if (response.data.errors) {
+        }
+      }
+    } finally {
+      setIsLoaded(true);
     }
   };
 
   const handleOrderConfirmation = async () => {
-    console.log("Order confirmed");
-
     const randomNumber = Math.floor(Math.random() * 900000) + 100000;
     const orderId = parseInt(`1001${randomNumber}`);
     setOrderId(orderId);
@@ -83,25 +184,33 @@ function Cart() {
       const response = await axiosClient.post("/addorder", payload);
       const data = response.data.data;
       setMessage(data);
+      setOrderConfirmed(true);
       return data;
     } catch (err) {
       const response = err.response;
       if (response && response.status !== 200) {
         if (response.data.errors) {
-          console.log(response.data.errors, "check errors");
+          setOrderConfirmed(false);
         }
       }
     } finally {
       setIsLoaded(true);
     }
-
-    navigate("/cart");
   };
 
   return (
     <Container
-      className={`${classes.cover} d-flex align-items-center flex-fill flex-column position-relative p-0 pt-5`}
+      className={`${classes.cover} d-flex align-items-center flex-fill flex-column position-relative p-0 py-5`}
     >
+      {alert.visible && (
+        <CustomAlert
+          variant={alert.variant}
+          message={alert.message}
+          onClose={() =>
+            setAlert((prevAlert) => ({ ...prevAlert, visible: false }))
+          }
+        />
+      )}
       <Row className="w-100 mx-0">
         <Col
           className={`${classes.header} p-0`}
@@ -167,11 +276,12 @@ function Cart() {
                               className="d-flex justify-content-end align-items-center"
                             >
                               <RemoveFromCart
-                                articleId={item.article_id}
+                                articleId={String(item.article_id)}
                                 selectedSize={item.selected_size}
                                 size={"md"}
                                 icon={faTrashCan}
-                                onRemove={refreshCart}
+                                onRemove={handleRemove}
+                                onNotRemove={handleNotRemove}
                               />
                             </Col>
                           </Row>
@@ -193,24 +303,35 @@ function Cart() {
                               <>
                                 Quantity: {"  "}
                                 <RemoveFromCart
-                                  articleId={item.article_id}
+                                  articleId={String(item.article_id)}
                                   selectedSize={item.selected_size}
                                   size={"sm"}
                                   icon={faMinus}
-                                  onRemove={refreshCart}
+                                  onRemove={handleRemove}
+                                  onNotRemove={handleNotRemove}
                                 />
                                 {"  "}
                                 <span className="mx-1">{item.quantity}</span>
                                 {"  "}
                                 <AddToCart
-                                  articleId={item.article_id}
+                                  articleId={String(item.article_id)}
                                   selectedSize={item.selected_size}
                                   size={"sm"}
                                   icon={faPlus}
-                                  onAdd={refreshCart}
+                                  onAdd={handleAdd}
+                                  onNotAdd={handleNotAdd}
                                 />
                               </>
                             </Col>
+
+                            {item.stock_message !== "" && (
+                              <Col
+                                xs={12}
+                                className="text-justify text-danger fw-bold my-3"
+                              >
+                                {item.stock_message}
+                              </Col>
+                            )}
                           </Row>
                           <Row>
                             <Col>
@@ -246,7 +367,7 @@ function Cart() {
                   <Row>
                     <Col>Delivery:</Col>
                     <Col className="text-end">
-                      {orderPrice > 300 ? <p>FREE</p> : <p>15.99 RON</p>}
+                      {orderPrice > 300 ? "FREE" : "15.99 RON"}
                     </Col>
                   </Row>
 
@@ -258,7 +379,7 @@ function Cart() {
                       {orderPrice > 300 ? (
                         <h6>{orderPrice} RON</h6>
                       ) : (
-                        <p>{orderPrice + 15.99} RON</p>
+                        <div>{orderPrice + 15.99} RON</div>
                       )}
                     </Col>
                   </Row>
@@ -269,11 +390,19 @@ function Cart() {
                         size="xs"
                         className={`${classes.grad} mx-0 w-100`}
                         onClick={() => {
-                          if (match) {
-                            markStartedCheckout();
-                            navigate("/cart/checkout");
-                          } else if (!match && selectedAddress != null) {
-                            handleOrderConfirmation();
+                          if (token) {
+                            if (match) {
+                              markStartedCheckout();
+                              navigate("/cart/checkout");
+                            } else {
+                              if (selectedAddress == null) {
+                                displayAddressError();
+                              } else {
+                                handleOrderConfirmation();
+                              }
+                            }
+                          } else {
+                            navigate("/register");
                           }
                         }}
                         disabled={articles?.length === 0}
@@ -285,9 +414,9 @@ function Cart() {
                   <Row>
                     <Col className="d-flex align-items-center">
                       <FontAwesomeIcon icon={faTruck} className="my-3 me-2" />
-                      <p className="m-0">
+                      <div className="m-0">
                         Free delivery on orders over 300 RON.
-                      </p>
+                      </div>
                     </Col>
                   </Row>
                 </div>
@@ -296,7 +425,7 @@ function Cart() {
           </>
         )}
 
-        {!articles && isLoaded && (
+        {!articles.length && isLoaded && (
           <Col className="d-flex justify-content-center">
             <img
               alt="no_items"

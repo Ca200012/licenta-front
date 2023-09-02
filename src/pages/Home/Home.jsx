@@ -29,6 +29,7 @@ function Home() {
   const navigateToMen = () => {
     navigate("/articles?gender=Men");
   };
+
   return (
     <Container
       className={`${classes.cover} d-flex align-items-center flex-fill flex-column position-relative p-0 py-5`}
@@ -98,7 +99,7 @@ function Home() {
 
       <RecommendedArticles onLoadingStatusChange={handleLoadingStatus} />
 
-      {!isLoading && (
+      {!isLoading && token && (
         <>
           <RecentlyViewedArticles />
         </>

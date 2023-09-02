@@ -4,14 +4,12 @@ import { Navigate } from "react-router-dom";
 import { useStateContext } from "../contexts/ContextProvider";
 
 function ProtectedCheckoutRoute({ children }) {
-	const { checkoutStarted } = useStateContext();
-	//console.log(checkoutStarted);
+  const { checkoutStarted } = useStateContext();
+  if (!checkoutStarted) {
+    return <Navigate to="/cart" replace />;
+  }
 
-	if (!checkoutStarted) {
-		return <Navigate to="/cart" replace />;
-	}
-
-	return children;
+  return children;
 }
 
 export default ProtectedCheckoutRoute;

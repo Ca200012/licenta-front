@@ -37,21 +37,4 @@ axiosClient.interceptors.request.use(async (config) => {
 
 });
 
-// axiosClient.interceptors.response.use((response) => {
-// 	return response;
-// }, (error) => async () => {
-// 	try {
-// 		const { response } = error;
-// 		//eroarea 401: daca a fost facut un request si user-ul nu este autorizat(token ul nu exista sau a expirat)
-// 		if (response.status == 401) {
-// 			localStorage.removeItem("ACCESS_TOKEN");
-// 			//await refreshToken();
-// 			window.location.href = '/login';
-// 		}
-// 	} catch (e) {
-// 		console.log(e);
-// 	}
-// 	//la alte tipuri de erori doar arata eroarea
-// 	throw error;
-// })
 export default axiosClient;

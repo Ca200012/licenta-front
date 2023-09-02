@@ -8,7 +8,6 @@ import Profile from "./pages/Profile/Profile";
 import Orders from "./components/profile/Orders";
 import ContactUs from "./components/profile/ContactUs";
 import PersonalData from "./components/profile/PersonalData";
-import Returns from "./components/profile/Returns";
 
 import Articles from "./pages/Articles/Articles";
 import ArticlePage from "./pages/ArticlePage/ArticlePage";
@@ -22,80 +21,76 @@ import SizeGuidePage from "./pages/SizeGuidePage/SizeGuidePage";
 import ReturnPolicyPage from "./pages/ReturnPolicyPage/ReturnPolicyPage";
 
 const router = createBrowserRouter([
-	{
-		path: "/",
-		element: <Layout />,
-		children: [
-			{
-				path: "/",
-				element: <Home />,
-			},
-			{
-				path: "/login",
-				element: <Login />,
-			},
-			{
-				path: "/register",
-				element: <Register />,
-			},
-			{
-				path: "/profile",
-				element: <Profile />,
-				children: [
-					{
-						path: "/profile/personal-data",
-						element: <PersonalData />,
-					},
-					{
-						path: "/profile/orders",
-						element: <Orders />,
-					},
-					{
-						path: "/profile/orderpage",
-						element: <OrderPage />,
-					},
-					{
-						path: "/profile/returns",
-						element: <Returns />,
-					},
-					{
-						path: "/profile/contact-us",
-						element: <ContactUs />,
-					},
-				],
-			},
-			{
-				path: "/articles",
-				element: <Articles />,
-			},
-			{
-				path: "/articlepage",
-				element: <ArticlePage />,
-			},
-			{
-				path: "/cart",
-				element: <Cart />,
-				children: [
-					{
-						path: "checkout",
-						element: (
-							<ProtectedCheckoutRoute>
-								<Checkout />
-							</ProtectedCheckoutRoute>
-						),
-					},
-				],
-			},
-			{
-				path: "/sizeguidepage",
-				element: <SizeGuidePage />,
-			},
-			{
-				path: "/returnpolicy",
-				element: <ReturnPolicyPage />,
-			},
-		],
-	},
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/register",
+        element: <Register />,
+      },
+      {
+        path: "/profile",
+        element: <Profile />,
+        children: [
+          {
+            path: "/profile/personal-data",
+            element: <PersonalData />,
+          },
+          {
+            path: "/profile/orders",
+            element: <Orders />,
+          },
+          {
+            path: "/profile/orderpage",
+            element: <OrderPage />,
+          },
+          {
+            path: "/profile/contact-us",
+            element: <ContactUs />,
+          },
+        ],
+      },
+      {
+        path: "/articles",
+        element: <Articles />,
+      },
+      {
+        path: "/articlepage",
+        element: <ArticlePage />,
+      },
+      {
+        path: "/cart",
+        element: <Cart />,
+        children: [
+          {
+            path: "checkout",
+            element: (
+              <ProtectedCheckoutRoute>
+                <Checkout />
+              </ProtectedCheckoutRoute>
+            ),
+          },
+        ],
+      },
+      {
+        path: "/sizeguidepage",
+        element: <SizeGuidePage />,
+      },
+      {
+        path: "/returnpolicy",
+        element: <ReturnPolicyPage />,
+      },
+    ],
+  },
 ]);
 
 export default router;
