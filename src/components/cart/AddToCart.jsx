@@ -67,6 +67,11 @@ function AddToCart(props) {
   };
 
   const lsAddToCart = async () => {
+    if (!articleId || !selectedSize) {
+      if (onNotAdd) onNotAdd("Please select a size first!");
+      return;
+    }
+
     const existingArticles = localStorage.getItem("articles");
     let articlesArray = [];
 

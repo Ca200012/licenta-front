@@ -296,7 +296,7 @@ function Articles() {
         <Row xs={1} md={3} lg={3} xl={4} className="w-100 m-0 bg-light">
           {articles.map((item, index) => (
             <Col key={index} id={index}>
-              <Card className="my-3">
+              <Card className="my-3 animated_card">
                 <Card.Img
                   role="button"
                   variant="top"
@@ -327,11 +327,6 @@ function Articles() {
                   <Row className="w-100 mx-0 px-0 d-flex justify-content-between align-items-center">
                     <Col className="px-0">
                       <Card.Text>{item.price} RON</Card.Text>
-                    </Col>
-                    <Col className="d-flex justify-content-end px-0">
-                      <Button variant="light">
-                        <FontAwesomeIcon icon={faCartShopping} />
-                      </Button>
                     </Col>
                   </Row>
                 </Card.Body>

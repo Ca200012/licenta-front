@@ -71,6 +71,10 @@ button:focus-visible {
   border-top: solid 1px #eee;
 }
 
+.main_nav {
+  border-top: none !important;
+}
+
 .nav-item {
   background-color: transparent; 
 }
@@ -79,19 +83,19 @@ button:focus-visible {
   background-color: #d6d9fe !important;
 }
 
-.card {
+.animated_card {
   position: relative;
   box-shadow: 0 0 0px white;
   transition: box-shadow .3s ease-in-out, transform .3s ease-in-out; /* Place the transition here */
 }
 
-.card:hover {
+.animated_card:hover {
   box-shadow: 0 0 4px #6f42c1, 0 0 4px #6f42c1;
   transform: scale(1.03);
   z-index: 10;
 }
 
-.btn:hover, :focus {
+.animated_btn:hover, .animated_btn:focus {
   background-color: #d6d9fe !important;
 }
 
@@ -168,4 +172,8 @@ button:focus-visible {
   top: 5px;
   right: 5px;
   z-index: 999;
+}
+
+.flex-unset {
+  flex: unset !important;
 }

@@ -428,17 +428,13 @@ function PersonalData() {
               </Row>
               <Row className="w-100 m-0">
                 <Col className="px-3">
-                  <ListGroup variant="flush">
-                    {addresses?.map((item, index) => (
-                      <ListGroup.Item
-                        key={index}
-                        className="d-flex flex-row align-items-center justify-content-between"
-                      >
-                        {isLoading ? (
-                          <Placeholder as="span" animation="glow">
-                            <Placeholder xs={12} />
-                          </Placeholder>
-                        ) : (
+                  {addresses.length ? (
+                    <ListGroup variant="flush">
+                      {addresses?.map((item, index) => (
+                        <ListGroup.Item
+                          key={index}
+                          className="d-flex flex-row align-items-center justify-content-between"
+                        >
                           <>
                             <div>
                               <FontAwesomeIcon
@@ -456,10 +452,14 @@ function PersonalData() {
                               />
                             </div>
                           </>
-                        )}
-                      </ListGroup.Item>
-                    ))}
-                  </ListGroup>
+                        </ListGroup.Item>
+                      ))}
+                    </ListGroup>
+                  ) : (
+                    <>
+                      <p>There are no addresses available.</p>
+                    </>
+                  )}
                 </Col>
               </Row>
               <Row className="w-100 m-0">

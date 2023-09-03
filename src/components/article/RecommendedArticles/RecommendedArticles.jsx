@@ -10,6 +10,32 @@ function RecommendedArticles({ onLoadingStatusChange }) {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
+  const [itemsPerSlide, setItemsPerSlide] = useState(4);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width <= 576) {
+        setItemsPerSlide(1);
+      } else if (width <= 768) {
+        setItemsPerSlide(2);
+      } else {
+        setItemsPerSlide(4);
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const recommendationSlices = [];
+  for (let i = 0; i < recommendations.length; i += itemsPerSlide) {
+    recommendationSlices.push(recommendations.slice(i, i + itemsPerSlide));
+  }
   useEffect(() => {
     getRecommendations();
   }, []);
@@ -46,143 +72,63 @@ function RecommendedArticles({ onLoadingStatusChange }) {
           <Row className="w-100 p-3 pt-5 bg-light">
             <h4>You might be interested in:</h4>
           </Row>
-          <Row className="w-100 px-3 bg-light d-flex justify-content-center">
-            <Carousel variant="dark" interval={null}>
-              <Carousel.Item>
-                <Row className="justify-content-around">
-                  {recommendations.slice(0, 4).map((item, index) => (
-                    <Col key={index} xs={12} md={3} lg={3} xl={3}>
-                      <Card className="my-3">
-                        <Card.Img
-                          role="button"
-                          variant="top"
-                          className={classes.card_img}
-                          src={
-                            item.default_image
-                              ? item.default_image
-                              : item.first_image
-                              ? item.first_image
-                              : item.second_image
-                              ? item.second_image
-                              : item.third_image
-                              ? item.third_image
-                              : "no_image_available.jpg"
-                          }
-                          onClick={() => navigateToArticlePage(item.article_id)}
-                        />
-                        <Card.Body>
-                          <Card.Title
+          <Row className="w-100 p-3 bg-light d-flex justify-content-center">
+            <Carousel variant="dark" interval={null} className="p-3">
+              {recommendationSlices.map((recommendationSlice, sliceIndex) => (
+                <Carousel.Item key={sliceIndex}>
+                  <Row className="justify-content-start">
+                    {recommendationSlice.map((item, index) => (
+                      <Col
+                        key={index}
+                        xs={12}
+                        md={itemsPerSlide === 2 ? 6 : 3}
+                        lg={3}
+                        xl={3}
+                      >
+                        <Card className="h-100">
+                          <Card.Img
                             role="button"
+                            variant="top"
+                            className={classes.card_img}
+                            src={
+                              item.default_image
+                                ? item.default_image
+                                : item.first_image
+                                ? item.first_image
+                                : item.second_image
+                                ? item.second_image
+                                : item.third_image
+                                ? item.third_image
+                                : "no_image_available.jpg"
+                            }
                             onClick={() =>
                               navigateToArticlePage(item.article_id)
                             }
-                          >
-                            {item.display_name}
-                          </Card.Title>
-                          <Card.Subtitle className="mb-2 text-muted">
-                            {item.brand_name}
-                          </Card.Subtitle>
-                          <Row className="w-100 mx-0 px-0 d-flex justify-content-between align-items-center">
-                            <Col className="px-0">
-                              <Card.Text>{item.price} RON</Card.Text>
-                            </Col>
-                          </Row>
-                        </Card.Body>
-                      </Card>
-                    </Col>
-                  ))}
-                </Row>
-              </Carousel.Item>
-              <Carousel.Item>
-                <Row className="justify-content-around">
-                  {recommendations.slice(4, 8).map((item, index) => (
-                    <Col key={index} xs={12} md={3} lg={3} xl={3}>
-                      <Card className="my-3">
-                        <Card.Img
-                          role="button"
-                          variant="top"
-                          className={classes.card_img}
-                          src={
-                            item.default_image
-                              ? item.default_image
-                              : item.first_image
-                              ? item.first_image
-                              : item.second_image
-                              ? item.second_image
-                              : item.third_image
-                              ? item.third_image
-                              : "no_image_available.jpg"
-                          }
-                          onClick={() => navigateToArticlePage(item.article_id)}
-                        />
-                        <Card.Body>
-                          <Card.Title
-                            role="button"
-                            onClick={() =>
-                              navigateToArticlePage(item.article_id)
-                            }
-                          >
-                            {item.display_name}
-                          </Card.Title>
-                          <Card.Subtitle className="mb-2 text-muted">
-                            {item.brand_name}
-                          </Card.Subtitle>
-                          <Row className="w-100 mx-0 px-0 d-flex justify-content-between align-items-center">
-                            <Col className="px-0">
-                              <Card.Text>{item.price} RON</Card.Text>
-                            </Col>
-                          </Row>
-                        </Card.Body>
-                      </Card>
-                    </Col>
-                  ))}
-                </Row>
-              </Carousel.Item>
-              <Carousel.Item>
-                <Row className="justify-content-start">
-                  {recommendations.slice(8, 10).map((item, index) => (
-                    <Col key={index} xs={12} md={3} lg={3} xl={3}>
-                      <Card className="my-3">
-                        <Card.Img
-                          role="button"
-                          variant="top"
-                          className={classes.card_img}
-                          src={
-                            item.default_image
-                              ? item.default_image
-                              : item.first_image
-                              ? item.first_image
-                              : item.second_image
-                              ? item.second_image
-                              : item.third_image
-                              ? item.third_image
-                              : "no_image_available.jpg"
-                          }
-                          onClick={() => navigateToArticlePage(item.article_id)}
-                        />
-                        <Card.Body>
-                          <Card.Title
-                            role="button"
-                            onClick={() =>
-                              navigateToArticlePage(item.article_id)
-                            }
-                          >
-                            {item.display_name}
-                          </Card.Title>
-                          <Card.Subtitle className="mb-2 text-muted">
-                            {item.brand_name}
-                          </Card.Subtitle>
-                          <Row className="w-100 mx-0 px-0 d-flex justify-content-between align-items-center">
-                            <Col className="px-0">
-                              <Card.Text>{item.price} RON</Card.Text>
-                            </Col>
-                          </Row>
-                        </Card.Body>
-                      </Card>
-                    </Col>
-                  ))}
-                </Row>
-              </Carousel.Item>
+                          />
+                          <Card.Body>
+                            <Card.Title
+                              role="button"
+                              onClick={() =>
+                                navigateToArticlePage(item.article_id)
+                              }
+                            >
+                              {item.display_name}
+                            </Card.Title>
+                            <Card.Subtitle className="mb-2 text-muted">
+                              {item.brand_name}
+                            </Card.Subtitle>
+                            <Row className="w-100 mx-0 px-0 d-flex justify-content-between align-items-center">
+                              <Col className="px-0">
+                                <Card.Text>{item.price} RON</Card.Text>
+                              </Col>
+                            </Row>
+                          </Card.Body>
+                        </Card>
+                      </Col>
+                    ))}
+                  </Row>
+                </Carousel.Item>
+              ))}
             </Carousel>
           </Row>
         </>

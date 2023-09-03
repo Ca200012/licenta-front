@@ -36,7 +36,10 @@ function Footer() {
               <h6>Information</h6>
             </Col>
             <Col className="text-center mb-1">
-              <Link className={`${classes.color} text-decoration-none`} to="#">
+              <Link
+                className={`${classes.color} text-decoration-none`}
+                to="/aboutus"
+              >
                 <FontAwesomeIcon icon={faAddressCard} className="me-2" />
                 About us
               </Link>
@@ -61,9 +64,12 @@ function Footer() {
               </Link>
             </Col>
             <Col className="text-center mb-1">
-              <Link className={`${classes.color} text-decoration-none`} to="#">
+              <Link
+                className={`${classes.color} text-decoration-none`}
+                to="/paymentandshippinginfo"
+              >
                 <FontAwesomeIcon icon={faMoneyBill} className="me-2" />
-                Payment information
+                Payment and shipping
               </Link>
             </Col>
           </Row>
@@ -121,17 +127,23 @@ function Footer() {
           className="d-flex justify-content-xl-center justify-content-lg-center justify-content-md-center justify-content-center"
         >
           <Row className="d-flex flex-column">
-            <Col className="text-center mb-2 mt-1">
-              <h6>Help</h6>
+            <Col className="text-center mb-2 mt-1 flex-unset">
+              <h6 className="m-0">Help</h6>
             </Col>
-            <Col className="text-center mb-1">
-              <Link className={`${classes.color} text-decoration-none`} to="#">
+            <Col className="text-center mb-1 flex-unset">
+              <Link
+                className={`${classes.color} text-decoration-none`}
+                to="/contactus"
+              >
                 <FontAwesomeIcon icon={faMessage} className="me-2" />
                 Contact us
               </Link>
             </Col>
-            <Col className="text-center mb-1">
-              <Link className={`${classes.color} text-decoration-none`} to="#">
+            <Col className="text-center mb-1 flex-unset">
+              <Link
+                className={`${classes.color} text-decoration-none`}
+                to="/faq"
+              >
                 <FontAwesomeIcon icon={faCircleQuestion} className="me-2" />
                 FAQ
               </Link>

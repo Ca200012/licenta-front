@@ -92,7 +92,7 @@ function Register() {
 
   const password = watch("password");
   const confirmPassword = watch("confirmPassword");
-  const passwordsMatch = password === confirmPassword;
+  const passwordsMatch = password == confirmPassword;
 
   //daca un user este logat si intra pe pg de register, va fi redirectionat catre pagina de home
   if (token) {
@@ -274,7 +274,7 @@ function Register() {
                   )}
                   {!passwordsMatch && !errors.confirmPassword && (
                     <Form.Text className="text-danger">
-                      Password and confirm password are not the same
+                      Password and password confirmation are not the same
                     </Form.Text>
                   )}
                 </Form.Group>

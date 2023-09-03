@@ -151,7 +151,7 @@ function Login() {
                   <Row className="w-100 m-0 d-flex justify-content-between">
                     <Col className="p-0 d-flex justify-content-start">
                       <Link
-                        to="/forgot-password"
+                        to="/password-reset"
                         className="text-decoration-none text-dark"
                       >
                         <div className={classes.links}>Forgot password?</div>

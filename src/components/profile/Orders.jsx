@@ -56,7 +56,7 @@ function Orders() {
                 >
                   <Card
                     key={index}
-                    className="border rounded-2 mb-3"
+                    className="border rounded-2 mb-3 animated_card"
                     onClick={() => {
                       navigateToOrderPage(item.order_id);
                     }}

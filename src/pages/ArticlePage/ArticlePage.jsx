@@ -262,9 +262,11 @@ function ArticlePage() {
                     </div>
                     <h6 className="fw-bold">Payment</h6>
                     <div>
-                      We make it easy to pay for your order securely. You can
-                      choose from a card payment(VISA, MasterCard, Maestro) or
-                      for cash on delivery.
+                      Enjoy a hassle-free payment experience with our "Cash on
+                      Delivery" option. Simply choose this method during
+                      checkout, and you can pay in cash when your order arrives
+                      at your doorstep. No need for online transactions or card
+                      payments.
                     </div>
                   </Accordion.Body>
                 </Accordion.Item>

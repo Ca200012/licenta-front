@@ -19,7 +19,11 @@ import Checkout from "./components/cart/Checkout";
 import ProtectedCheckoutRoute from "./guards/ProtectedCheckoutRoute";
 import SizeGuidePage from "./pages/SizeGuidePage/SizeGuidePage";
 import ReturnPolicyPage from "./pages/ReturnPolicyPage/ReturnPolicyPage";
-
+import PaymentAndShippingInfoPage from "./pages/PaymentAndShippingInfoPage/PaymentAndShippingInfoPage";
+import AboutUsPage from "./pages/AboutUsPage/AboutUsPage";
+import ContactUsPage from "./pages/ContactUsPage/ContactUsPage";
+import PasswordReset from "./pages/PasswordReset/PasswordReset";
+import FAQ from "./pages/FAQ/FAQ";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -36,6 +40,10 @@ const router = createBrowserRouter([
       {
         path: "/register",
         element: <Register />,
+      },
+      {
+        path: "/password-reset",
+        element: <PasswordReset />,
       },
       {
         path: "/profile",
@@ -82,12 +90,28 @@ const router = createBrowserRouter([
         ],
       },
       {
+        path: "/contactus",
+        element: <ContactUsPage />,
+      },
+      {
         path: "/sizeguidepage",
         element: <SizeGuidePage />,
       },
       {
         path: "/returnpolicy",
         element: <ReturnPolicyPage />,
+      },
+      {
+        path: "/paymentandshippinginfo",
+        element: <PaymentAndShippingInfoPage />,
+      },
+      {
+        path: "/aboutus",
+        element: <AboutUsPage />,
+      },
+      {
+        path: "/faq",
+        element: <FAQ />,
       },
     ],
   },

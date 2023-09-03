@@ -26,6 +26,21 @@ function Header() {
   const navigate = useNavigate();
   const { token, setUser, setToken } = useStateContext();
 
+  const predefinedGenders = [
+    {
+      id: 1,
+      name: "Women",
+    },
+    {
+      id: 2,
+      name: "Men",
+    },
+    {
+      id: 3,
+      name: "Unisex",
+    },
+  ];
+
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [articleTypes, setArticleTypes] = useState([]);
@@ -151,285 +166,104 @@ function Header() {
                 />{" "}
               </Navbar.Brand>
               <Nav className="mx-3 d-flex flex-sm-row flex-column align-items-center justify-content-center">
-                {/* women */}
-                <NavDropdown
-                  title="Women"
-                  id="1"
-                  renderMenuOnMount={true}
-                  className="mx-3 fw-bold"
-                  onClick={(e) => getCategories(e.target.id)}
-                >
-                  <NavDropdown.Item
-                    onClick={() => {
-                      navigateToArticlesPage("Women");
-                    }}
+                {predefinedGenders.map((gender, genderIndex) => (
+                  <NavDropdown
+                    title={gender.name}
+                    id={gender.id}
+                    renderMenuOnMount={true}
+                    className="mx-3 fw-bold main_nav"
+                    onClick={(e) => getCategories(e.target.id)}
+                    key={genderIndex}
                   >
-                    See All
-                  </NavDropdown.Item>
-                  {(isCategoriesLoading &&
-                    !isSubCategoriesLoading &&
-                    !isArticleTypesLoading) ||
-                  !categories.length ? (
-                    <NavDropdown.Item>Loading...</NavDropdown.Item>
-                  ) : (
-                    categories.map((item, index) => (
-                      <NavDropdown
-                        key={index}
-                        title={item.name}
-                        drop={"end"}
-                        onClick={(e) => {
-                          getSubcategories(item.category_id);
-                        }}
-                      >
-                        <NavDropdown.Item
-                          onClick={() => {
-                            navigateToArticlesPage("Women", item.name);
+                    <NavDropdown.Item
+                      onClick={() => {
+                        navigateToArticlesPage(gender.name);
+                      }}
+                    >
+                      See All
+                    </NavDropdown.Item>
+
+                    {(isCategoriesLoading &&
+                      !isSubCategoriesLoading &&
+                      !isArticleTypesLoading) ||
+                    !categories.length ? (
+                      <NavDropdown.Item>Loading...</NavDropdown.Item>
+                    ) : (
+                      categories.map((item, index) => (
+                        <NavDropdown
+                          key={index}
+                          title={item.name}
+                          drop={"end"}
+                          onClick={(e) => {
+                            getSubcategories(item.category_id);
                           }}
                         >
-                          See All
-                        </NavDropdown.Item>
-                        {(isSubCategoriesLoading &&
-                          !isCategoriesLoading &&
-                          !isArticleTypesLoading) ||
-                        !subCategories.length ? (
-                          <NavDropdown.Item>Loading...</NavDropdown.Item>
-                        ) : (
-                          subCategories.map((subCat, subIndex) => (
-                            <NavDropdown
-                              key={subIndex}
-                              title={subCat.name}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                getArticleTypes(e, subCat.subcategory_id);
-                              }}
-                            >
-                              <NavDropdown.Item
-                                onClick={() => {
-                                  navigateToArticlesPage(
-                                    "Women",
-                                    item.name,
-                                    subCat.name,
-                                    ""
-                                  );
+                          <NavDropdown.Item
+                            onClick={() => {
+                              navigateToArticlesPage(gender.name, item.name);
+                            }}
+                          >
+                            See All
+                          </NavDropdown.Item>
+                          {(isSubCategoriesLoading &&
+                            !isCategoriesLoading &&
+                            !isArticleTypesLoading) ||
+                          !subCategories.length ? (
+                            <NavDropdown.Item>Loading...</NavDropdown.Item>
+                          ) : (
+                            subCategories.map((subCat, subIndex) => (
+                              <NavDropdown
+                                key={subIndex}
+                                title={subCat.name}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  getArticleTypes(e, subCat.subcategory_id);
                                 }}
                               >
-                                See All
-                              </NavDropdown.Item>
-                              {(isArticleTypesLoading &&
-                                !isCategoriesLoading) ||
-                              !articleTypes.length ? (
-                                <NavDropdown.Item>Loading...</NavDropdown.Item>
-                              ) : (
-                                articleTypes.map((artType, artIndex) => (
-                                  <NavDropdown.Item
-                                    key={artIndex}
-                                    title={artType.name}
-                                    onClick={() => {
-                                      navigateToArticlesPage(
-                                        "Women",
-                                        item.name,
-                                        subCat.name,
-                                        artType.name
-                                      );
-                                    }}
-                                  >
-                                    {artType.name}
+                                <NavDropdown.Item
+                                  onClick={() => {
+                                    navigateToArticlesPage(
+                                      gender.name,
+                                      item.name,
+                                      subCat.name,
+                                      ""
+                                    );
+                                  }}
+                                >
+                                  See All
+                                </NavDropdown.Item>
+                                {(isArticleTypesLoading &&
+                                  !isCategoriesLoading) ||
+                                !articleTypes.length ? (
+                                  <NavDropdown.Item>
+                                    Loading...
                                   </NavDropdown.Item>
-                                ))
-                              )}
-                            </NavDropdown>
-                          ))
-                        )}
-                      </NavDropdown>
-                    ))
-                  )}
-                </NavDropdown>
-                {/* men */}
-                <NavDropdown
-                  title="Men"
-                  id="2"
-                  renderMenuOnMount={true}
-                  className="mx-3 fw-bold"
-                  onClick={(e) => getCategories(e.target.id)}
-                >
-                  <NavDropdown.Item
-                    onClick={() => {
-                      navigateToArticlesPage("Men", "", "", "");
-                    }}
-                  >
-                    See All
-                  </NavDropdown.Item>
-                  {(isCategoriesLoading &&
-                    !isSubCategoriesLoading &&
-                    !isArticleTypesLoading) ||
-                  !categories.length ? (
-                    <NavDropdown.Item>Loading...</NavDropdown.Item>
-                  ) : (
-                    categories.map((item, index) => (
-                      <NavDropdown
-                        key={index}
-                        title={item.name}
-                        drop={"end"}
-                        onClick={(e) => {
-                          getSubcategories(item.category_id);
-                        }}
-                      >
-                        <NavDropdown.Item
-                          onClick={() => {
-                            navigateToArticlesPage("Men", item.name, "", "");
-                          }}
-                        >
-                          See All
-                        </NavDropdown.Item>
-                        {(isSubCategoriesLoading &&
-                          !isCategoriesLoading &&
-                          !isArticleTypesLoading) ||
-                        !subCategories.length ? (
-                          <NavDropdown.Item>Loading...</NavDropdown.Item>
-                        ) : (
-                          subCategories.map((subCat, subIndex) => (
-                            <NavDropdown
-                              key={subIndex}
-                              title={subCat.name}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                getArticleTypes(e, subCat.subcategory_id);
-                              }}
-                            >
-                              <NavDropdown.Item
-                                onClick={() => {
-                                  navigateToArticlesPage(
-                                    "Men",
-                                    item.name,
-                                    subCat.name,
-                                    ""
-                                  );
-                                }}
-                              >
-                                See All
-                              </NavDropdown.Item>
-                              {(isArticleTypesLoading &&
-                                !isCategoriesLoading) ||
-                              !articleTypes.length ? (
-                                <NavDropdown.Item>Loading...</NavDropdown.Item>
-                              ) : (
-                                articleTypes.map((artType, artIndex) => (
-                                  <NavDropdown.Item
-                                    key={artIndex}
-                                    title={artType.name}
-                                    onClick={() => {
-                                      navigateToArticlesPage(
-                                        "Men",
-                                        item.name,
-                                        subCat.name,
-                                        artType.name
-                                      );
-                                    }}
-                                  >
-                                    {artType.name}
-                                  </NavDropdown.Item>
-                                ))
-                              )}
-                            </NavDropdown>
-                          ))
-                        )}
-                      </NavDropdown>
-                    ))
-                  )}
-                </NavDropdown>
-                {/* unisex */}
-                <NavDropdown
-                  title="Unisex"
-                  id="3"
-                  renderMenuOnMount={true}
-                  className="mx-3 fw-bold"
-                  onClick={(e) => getCategories(e.target.id)}
-                >
-                  <NavDropdown.Item
-                    onClick={() => {
-                      navigateToArticlesPage("Unisex", "", "", "");
-                    }}
-                  >
-                    See All
-                  </NavDropdown.Item>
-                  {(isCategoriesLoading &&
-                    !isSubCategoriesLoading &&
-                    !isArticleTypesLoading) ||
-                  !categories.length ? (
-                    <NavDropdown.Item>Loading...</NavDropdown.Item>
-                  ) : (
-                    categories.map((item, index) => (
-                      <NavDropdown
-                        key={index}
-                        title={item.name}
-                        drop={"end"}
-                        onClick={(e) => {
-                          getSubcategories(item.category_id);
-                        }}
-                      >
-                        <NavDropdown.Item
-                          onClick={() => {
-                            navigateToArticlesPage("Unisex", item.name, "", "");
-                          }}
-                        >
-                          See All
-                        </NavDropdown.Item>
-                        {(isSubCategoriesLoading &&
-                          !isCategoriesLoading &&
-                          !isArticleTypesLoading) ||
-                        !subCategories.length ? (
-                          <NavDropdown.Item>Loading...</NavDropdown.Item>
-                        ) : (
-                          subCategories.map((subCat, subIndex) => (
-                            <NavDropdown
-                              key={subIndex}
-                              title={subCat.name}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                getArticleTypes(e, subCat.subcategory_id);
-                              }}
-                            >
-                              <NavDropdown.Item
-                                onClick={() => {
-                                  navigateToArticlesPage(
-                                    "Unisex",
-                                    item.name,
-                                    subCat.name,
-                                    ""
-                                  );
-                                }}
-                              >
-                                See All
-                              </NavDropdown.Item>
-                              {(isArticleTypesLoading &&
-                                !isCategoriesLoading) ||
-                              !articleTypes.length ? (
-                                <NavDropdown.Item>Loading...</NavDropdown.Item>
-                              ) : (
-                                articleTypes.map((artType, artIndex) => (
-                                  <NavDropdown.Item
-                                    key={artIndex}
-                                    title={artType.name}
-                                    onClick={() => {
-                                      navigateToArticlesPage(
-                                        "Unisex",
-                                        item.name,
-                                        subCat.name,
-                                        artType.name
-                                      );
-                                    }}
-                                  >
-                                    {artType.name}
-                                  </NavDropdown.Item>
-                                ))
-                              )}
-                            </NavDropdown>
-                          ))
-                        )}
-                      </NavDropdown>
-                    ))
-                  )}
-                </NavDropdown>
+                                ) : (
+                                  articleTypes.map((artType, artIndex) => (
+                                    <NavDropdown.Item
+                                      key={artIndex}
+                                      title={artType.name}
+                                      onClick={() => {
+                                        navigateToArticlesPage(
+                                          gender.name,
+                                          item.name,
+                                          subCat.name,
+                                          artType.name
+                                        );
+                                      }}
+                                    >
+                                      {artType.name}
+                                    </NavDropdown.Item>
+                                  ))
+                                )}
+                              </NavDropdown>
+                            ))
+                          )}
+                        </NavDropdown>
+                      ))
+                    )}
+                  </NavDropdown>
+                ))}
               </Nav>
             </Col>
             <Col

@@ -59,7 +59,7 @@ function Home() {
           <img className="d-block w-100 h-100" src="./women-home.jpg" />
           {!isLoading && (
             <Button
-              variant="light"
+              variant="primary"
               size="md"
               className={`${classes.grad} mx-0 position-absolute women_button`}
               onClick={() => {
@@ -82,7 +82,7 @@ function Home() {
           <img className="d-block w-100 h-100" src="./men-home.jpg" />
           {!isLoading && (
             <Button
-              variant="light"
+              variant="primary"
               size="md"
               className={`${classes.grad} mx-0 position-absolute men_button`}
               onClick={() => {
