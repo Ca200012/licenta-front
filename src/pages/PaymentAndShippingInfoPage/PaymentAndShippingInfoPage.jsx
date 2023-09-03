@@ -20,7 +20,7 @@ function PaymentAndShippingInfoPage() {
         </Col>
       </Row>
       <Row className="bg-light w-100 p-3">
-        <section class="payment-info">
+        <section className="payment-info">
           <h2>Payment Information</h2>
           <p>
             We offer the "Cash on Delivery" payment method for your convenience.
@@ -30,7 +30,7 @@ function PaymentAndShippingInfoPage() {
           </p>
         </section>
 
-        <section class="shipping-info">
+        <section className="shipping-info">
           <h2>Shipping Information</h2>
           <p>
             Your order will be delivered to the shipping address provided during

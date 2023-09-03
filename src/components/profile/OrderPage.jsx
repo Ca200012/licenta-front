@@ -27,6 +27,7 @@ function OrderPage() {
   const query = useQuery();
   const order_id = query.get("id");
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [isLoading, setIsLoading] = useState(true);
   const [orderDetails, setOrderDetails] = useState([]);
@@ -36,6 +37,26 @@ function OrderPage() {
     message: null,
     visible: false,
   });
+
+  useEffect(() => {
+    // Push the current state and URL into the history stack.
+    window.history.pushState(null, document.title, window.location.href);
+
+    const handleBackEvent = (event) => {
+      // Prevent the default back action
+      event.preventDefault();
+      // Push it again to prevent going back in history
+      window.history.pushState(null, document.title, window.location.href);
+    };
+
+    // Listen to popstate event, triggered by pressing the back button
+    window.addEventListener("popstate", handleBackEvent);
+
+    return () => {
+      // Cleanup, remove the event listener when the component unmounts
+      window.removeEventListener("popstate", handleBackEvent);
+    };
+  }, []);
 
   useEffect(() => {
     getOrderData(order_id);

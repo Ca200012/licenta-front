@@ -37,7 +37,13 @@ function Articles() {
 
   const [articles, setArticles] = useState([]);
   const [filters, setFilters] = useState([]);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    Brand: [],
+    Colour: [],
+    Usage: [],
+    Pattern: [],
+    Season: [],
+  });
   const [filtersDropdownIsOpen, setFiltersDropdownIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -76,9 +82,11 @@ function Articles() {
       }
       updatedFormData[filterTitle].push(value);
     } else {
-      updatedFormData[filterTitle] = updatedFormData[filterTitle].filter(
-        (item) => item !== value
-      );
+      if (updatedFormData[filterTitle]) {
+        updatedFormData[filterTitle] = updatedFormData[filterTitle].filter(
+          (item) => item !== value
+        );
+      }
     }
 
     setFormData(updatedFormData);
@@ -149,7 +157,13 @@ function Articles() {
   };
 
   const resetFilters = () => {
-    setFormData({});
+    setFormData({
+      Brand: [],
+      Colour: [],
+      Usage: [],
+      Pattern: [],
+      Season: [],
+    });
     getArticles({});
     setFiltersDropdownIsOpen(false);
     setIsLoading(true);

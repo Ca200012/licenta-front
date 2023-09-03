@@ -20,7 +20,7 @@ function AboutUsPage() {
         </Col>
       </Row>
       <Row className="bg-light w-100 p-3">
-        <section class="about-info">
+        <section className="about-info">
           <h2>Welcome to our website!</h2>
           <p>
             We are passionate about providing you with a diverse range of
@@ -35,7 +35,7 @@ function AboutUsPage() {
           </p>
         </section>
 
-        <section class="our-story">
+        <section className="our-story">
           <h2>Our Story</h2>
           <p>
             Our journey started with a shared love for fashion and a desire to
@@ -51,7 +51,7 @@ function AboutUsPage() {
           </p>
         </section>
 
-        <section class="mission-vision">
+        <section className="mission-vision">
           <h2>Our Mission and Vision</h2>
           <p>
             Our mission is to curate a collection that caters to a wide range of

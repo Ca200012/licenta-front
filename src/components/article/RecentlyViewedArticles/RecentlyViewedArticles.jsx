@@ -56,6 +56,7 @@ function RecentlyViewedArticles() {
   };
 
   const navigateToArticlePage = (id) => {
+    console.log("navigating to " + id);
     const encodedId = btoa(id.toString());
     navigate(`/articlepage?id=${encodedId}`);
   };

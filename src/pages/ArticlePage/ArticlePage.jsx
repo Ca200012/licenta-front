@@ -27,6 +27,7 @@ function useQuery() {
 
 function ArticlePage() {
   const query = useQuery();
+  const location = useLocation();
   const encodedId = query.get("id");
   const decodedId = atob(encodedId);
 
@@ -54,7 +55,14 @@ function ArticlePage() {
     if (token) {
       addViewedArticle(decodedId);
     }
-  }, []);
+  }, [decodedId, token]);
+
+  useEffect(() => {
+    const encodedId = query.get("id");
+    const id = atob(encodedId);
+
+    getArticleData(id);
+  }, [location]);
 
   useEffect(() => {
     let timer;

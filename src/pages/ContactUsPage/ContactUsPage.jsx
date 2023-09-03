@@ -2,11 +2,31 @@ import { Row, Col, Container, Form, Button } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 
 import classes from "./ContactUsPage.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axiosClient from "../../axios-client";
 
 function ContactUsPage() {
   const [showContactForm, setShowContactForm] = useState(true);
+
+  useEffect(() => {
+    // Push the current state and URL into the history stack.
+    window.history.pushState(null, document.title, window.location.href);
+
+    const handleBackEvent = (event) => {
+      // Prevent the default back action
+      event.preventDefault();
+      // Push it again to prevent going back in history
+      window.history.pushState(null, document.title, window.location.href);
+    };
+
+    // Listen to popstate event, triggered by pressing the back button
+    window.addEventListener("popstate", handleBackEvent);
+
+    return () => {
+      // Cleanup, remove the event listener when the component unmounts
+      window.removeEventListener("popstate", handleBackEvent);
+    };
+  }, []);
 
   const onSubmit = (form_data) => {
     const payload = {
