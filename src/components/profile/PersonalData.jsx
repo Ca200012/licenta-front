@@ -232,13 +232,10 @@ function PersonalData() {
 
   const setCityFn = (selected) => {
     if (selected && selected.length) {
-      const selectedCity = selected[0]; // Get the first item in the selected array
-      // Now you can access selectedCity.name and selectedCity.city_id
+      const selectedCity = selected[0];
 
-      // Assuming city is a state variable where you want to store the city_id
       setCity(selectedCity.city_id);
     } else {
-      // Clear city if no option is selected
       setCity(null);
     }
   };

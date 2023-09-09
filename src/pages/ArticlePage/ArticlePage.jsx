@@ -75,6 +75,7 @@ function ArticlePage() {
   }, [alert.visible]);
 
   const handleItemNotAddedToCart = (err) => {
+    setSelectedSize(null);
     setAlert({
       variant: "danger",
       message: err,
@@ -83,6 +84,7 @@ function ArticlePage() {
   };
 
   const handleItemAddedToCart = () => {
+    setSelectedSize(null);
     setAlert({
       variant: "success",
       message: "Item successfully added to cart!",
@@ -199,6 +201,7 @@ function ArticlePage() {
                 disabled={isDisabledS}
                 title="Add size S to cart"
                 onClick={() => setSelectedSize("S")}
+                active={selectedSize == "S"}
               >
                 S
               </Button>
@@ -208,6 +211,7 @@ function ArticlePage() {
                 disabled={isDisabledM}
                 title="Add size M to cart"
                 onClick={() => setSelectedSize("M")}
+                active={selectedSize == "M"}
               >
                 M
               </Button>
@@ -217,6 +221,7 @@ function ArticlePage() {
                 disabled={isDisabledL}
                 title="Add size L to cart"
                 onClick={() => setSelectedSize("L")}
+                active={selectedSize == "L"}
               >
                 L
               </Button>
@@ -226,6 +231,7 @@ function ArticlePage() {
                 disabled={isDisabledXL}
                 title="Add size XL to cart"
                 onClick={() => setSelectedSize("XL")}
+                active={selectedSize == "XL"}
               >
                 XL
               </Button>
@@ -235,6 +241,7 @@ function ArticlePage() {
                 disabled={isDisabledXXL}
                 title="Add size XXL to cart"
                 onClick={() => setSelectedSize("XXL")}
+                active={selectedSize == "XXL"}
               >
                 XXL
               </Button>

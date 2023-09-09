@@ -53,7 +53,7 @@ function Articles() {
   useEffect(() => {
     document.title = "Articles";
     setIsLoading(true);
-    setCurrentPage(1); // Resetting currentPage to 1
+    setCurrentPage(1);
     getArticles(formData, 1); // Starting from page 1
   }, [location]); // Re-run effect if `location` changes
 
@@ -148,7 +148,7 @@ function Articles() {
       setCurrentPage(page + 1); // increment current page
       setHasMore(data.last_page > data.current_page); // set if there are more articles to load
 
-      setFilters(data.filters); // Set filters if you have any
+      setFilters(data.filters);
     } catch (err) {
       console.error(err);
     } finally {

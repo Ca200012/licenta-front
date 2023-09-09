@@ -26,7 +26,6 @@ axiosClient.interceptors.request.use(async (config) => {
 				localStorage.setItem("ACCESS_TOKEN", newToken);
 				token = newToken;
 			}).catch((error) => {
-				// Handle error, possibly logout the user
 				localStorage.removeItem("ACCESS_TOKEN");
 				window.location.href = '/login';
 			});

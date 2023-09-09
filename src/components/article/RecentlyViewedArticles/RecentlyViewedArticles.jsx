@@ -65,7 +65,7 @@ function RecentlyViewedArticles() {
     <>
       {viewedArticles.length > 0 && (
         <>
-          <Row className="w-100 p-3 pt-5 bg-light">
+          <Row className="w-100 p-3 bg-light">
             <h4>You recently viewed:</h4>
           </Row>
           <Row className="w-100 p-3 bg-light d-flex justify-content-center">

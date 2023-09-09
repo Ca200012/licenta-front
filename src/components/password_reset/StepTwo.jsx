@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 
 import classes from "../../pages/PasswordReset/PasswordReset.module.css";
 
-function StepOne({ setCode, code, nextStep, step }) {
+function StepTwo({ setCode, code, nextStep, step }) {
   const {
     register,
     handleSubmit,
@@ -52,4 +52,4 @@ function StepOne({ setCode, code, nextStep, step }) {
   );
 }
 
-export default StepOne;
+export default StepTwo;

@@ -402,7 +402,7 @@ function Cart() {
                               }
                             }
                           } else {
-                            navigate("/register");
+                            navigate("/login");
                           }
                         }}
                         disabled={articles?.length === 0}
